@@ -1,0 +1,1794 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SERVIDOR DE ESTUDOS — 5º Ano | 3º Bimestre</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Baloo+2:wght@700;800&family=Inter:wght@400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --void:#0a1526;--dark:#0e1c33;--panel:#152741;--panel2:#1c3252;
+  --cursed:#00b06f;--cursed2:#22d98d;--cursed3:#6ff0b8;
+  --blue:#00a8ff;--blue2:#5cc9ff;
+  --red:#ff4757;--crimson:#e8384f;
+  --gold:#ffc312;--green:#2ed573;
+  --txt:#ffffff;--mut:#8ba3c7;--brd:#25405f;
+}
+body{
+  font-family:'Inter',sans-serif;background:var(--void);color:var(--txt);
+  min-height:100vh;overflow-x:hidden;position:relative;
+}
+/* ===== BACKGROUND ENERGY ===== */
+.bg-layer{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.22}
+.orb1{width:420px;height:420px;background:#00b06f;top:-140px;right:-120px;animation:float1 14s ease-in-out infinite}
+.orb2{width:340px;height:340px;background:#0077cc;bottom:-100px;left:-100px;animation:float2 18s ease-in-out infinite}
+.orb3{width:260px;height:260px;background:#ffc312;top:45%;left:55%;animation:float3 16s ease-in-out infinite;opacity:.14}
+@keyframes float1{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,50px)}}
+@keyframes float2{0%,100%{transform:translate(0,0)}50%{transform:translate(50px,-40px)}}
+@keyframes float3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-30px,-30px) scale(1.15)}}
+.scan{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.5;
+  background-image:linear-gradient(rgba(37,64,95,.35) 2px,transparent 2px),
+  linear-gradient(90deg,rgba(37,64,95,.35) 2px,transparent 2px);background-size:48px 48px}
+
+/* ===== TOP HUD ===== */
+.hud{position:sticky;top:0;z-index:100;background:rgba(10,7,21,.93);
+  backdrop-filter:blur(16px);border-bottom:2px solid var(--cursed);
+  box-shadow:0 4px 30px rgba(0,176,111,.3)}
+.hud-in{max-width:900px;margin:0 auto;padding:12px 16px}
+.hud-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:9px}
+.brand-mark{width:34px;height:34px;border-radius:9px;
+  background:linear-gradient(135deg,#00b06f,#ffc312);
+  display:flex;align-items:center;justify-content:center;font-size:17px;
+  box-shadow:0 0 18px rgba(0,176,111,.6);flex-shrink:0}
+.brand-txt{line-height:1.15}
+.brand-t{font-family:'Baloo 2',cursive;font-weight:800;font-size:14px;
+  letter-spacing:.5px;background:linear-gradient(90deg,#6ff0b8,#5cc9ff);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.brand-s{font-size:9px;color:var(--mut);letter-spacing:2px;text-transform:uppercase;font-weight:600}
+.rank-box{display:flex;align-items:center;gap:8px;background:rgba(0,176,111,.12);
+  border:1.5px solid var(--cursed);border-radius:10px;padding:5px 12px}
+.rank-lbl{font-size:8px;color:var(--cursed3);letter-spacing:1.5px;text-transform:uppercase;font-weight:700}
+.rank-val{font-family:'Fredoka',sans-serif;font-weight:700;font-size:15px;color:var(--gold);line-height:1}
+.ce-wrap{margin-top:10px}
+.ce-head{display:flex;justify-content:space-between;font-size:9px;
+  color:var(--cursed3);letter-spacing:1.5px;text-transform:uppercase;font-weight:700;margin-bottom:4px}
+.ce-bar{height:9px;background:#1c3252;border:1px solid var(--brd);border-radius:99px;overflow:hidden;position:relative}
+.ce-fill{height:100%;background:linear-gradient(90deg,#00b06f,#00a8ff);border-radius:99px;
+  transition:width .6s cubic-bezier(.4,0,.2,1);box-shadow:0 0 12px rgba(0,176,111,.8);width:0%}
+
+/* ===== NAV TABS ===== */
+.nav{max-width:900px;margin:0 auto;padding:12px 10px 0;overflow-x:auto;
+  scrollbar-width:none;-ms-overflow-style:none;position:relative;z-index:50}
+.nav::-webkit-scrollbar{display:none}
+.nav-in{display:inline-flex;gap:7px;padding-bottom:10px;min-width:100%}
+.ntab{background:var(--panel);border:1.5px solid var(--brd);border-radius:11px;
+  padding:9px 13px;cursor:pointer;transition:.22s;white-space:nowrap;
+  display:flex;align-items:center;gap:7px;flex-shrink:0;font-family:'Inter',sans-serif}
+.ntab:hover{border-color:var(--cursed);background:var(--panel2)}
+.ntab.on{background:linear-gradient(135deg,rgba(34,217,141,.3),rgba(0,168,255,.18));
+  border-color:var(--cursed);box-shadow:0 0 18px rgba(0,176,111,.4)}
+.ntab-ic{font-size:16px}
+.ntab-tx{text-align:left;line-height:1.2}
+.ntab-n{font-size:11.5px;font-weight:700;color:var(--txt)}
+.ntab-d{font-size:8.5px;color:var(--mut);font-weight:600;letter-spacing:.5px}
+.ntab.on .ntab-d{color:var(--blue2)}
+
+/* ===== MAIN ===== */
+.main{max-width:900px;margin:0 auto;padding:6px 14px 80px;position:relative;z-index:10}
+.view{display:none}.view.on{display:block;animation:fade .35s ease}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ===== MISSION HEADER ===== */
+.mhead{background:linear-gradient(135deg,var(--panel2),var(--panel));
+  border:2px solid var(--cursed);border-radius:12px;padding:18px;margin:14px 0 16px;
+  position:relative;overflow:hidden;box-shadow:0 0 30px rgba(0,176,111,.25)}
+.mhead::before{content:'';position:absolute;top:-50%;right:-20%;width:200px;height:200px;
+  background:radial-gradient(circle,rgba(0,176,111,.35),transparent 70%);pointer-events:none}
+.mh-tag{display:inline-block;font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--blue2);background:rgba(0,168,255,.13);border:1px solid rgba(0,168,255,.35);
+  border-radius:99px;padding:3px 10px;font-weight:700;margin-bottom:9px}
+.mh-t{font-family:'Baloo 2',cursive;font-weight:800;font-size:clamp(19px,5vw,27px);
+  line-height:1.15;margin-bottom:6px;position:relative;z-index:1}
+.mh-t span{background:linear-gradient(90deg,#6ff0b8,#00a8ff);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.mh-d{font-size:12px;color:var(--mut);font-weight:600;position:relative;z-index:1}
+.mh-stats{display:flex;gap:16px;margin-top:12px;flex-wrap:wrap;position:relative;z-index:1}
+.mh-st{display:flex;flex-direction:column}
+.mh-sv{font-family:'Fredoka',sans-serif;font-weight:700;font-size:19px;color:var(--gold);line-height:1}
+.mh-sl{font-size:8.5px;color:var(--mut);letter-spacing:1px;text-transform:uppercase;font-weight:600;margin-top:2px}
+
+/* ===== MODE SWITCH ===== */
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:16px}
+.mode{padding:13px 10px;border-radius:12px;border:2px solid var(--brd);
+  background:var(--panel);cursor:pointer;transition:.22s;text-align:center;
+  font-family:'Inter',sans-serif}
+.mode:hover{border-color:var(--cursed2)}
+.mode-ic{font-size:19px;display:block;margin-bottom:3px}
+.mode-n{font-size:12.5px;font-weight:700;color:var(--txt)}
+.mode-s{font-size:9px;color:var(--mut);margin-top:1px;font-weight:600}
+.mode.on{background:linear-gradient(135deg,rgba(34,217,141,.35),rgba(0,168,255,.15));
+  border-color:var(--cursed);box-shadow:0 0 20px rgba(0,176,111,.4)}
+.mode.on .mode-s{color:var(--blue2)}
+
+/* ===== TOPIC CARDS ===== */
+.topic{background:var(--panel);border:1.5px solid var(--brd);border-radius:14px;
+  margin-bottom:11px;overflow:hidden;transition:.25s}
+.topic.weak{border-color:var(--red);box-shadow:0 0 22px rgba(239,68,68,.28)}
+.topic.mastered{border-color:var(--green);box-shadow:0 0 18px rgba(34,197,94,.2)}
+.t-head{padding:14px 16px;cursor:pointer;display:flex;align-items:center;
+  gap:11px;user-select:none;transition:.2s}
+.t-head:hover{background:rgba(0,176,111,.07)}
+.t-num{width:30px;height:30px;border-radius:8px;flex-shrink:0;
+  background:linear-gradient(135deg,rgba(34,217,141,.35),rgba(0,168,255,.2));
+  border:1px solid var(--cursed);display:flex;align-items:center;justify-content:center;
+  font-family:'Fredoka',sans-serif;font-weight:700;font-size:13px;color:var(--cursed3)}
+.topic.weak .t-num{background:rgba(239,68,68,.2);border-color:var(--red);color:#fca5a5}
+.topic.mastered .t-num{background:rgba(34,197,94,.2);border-color:var(--green);color:#86efac}
+.t-info{flex:1;min-width:0}
+.t-name{font-size:13.5px;font-weight:700;line-height:1.3}
+.t-meta{font-size:10px;color:var(--mut);margin-top:2px;font-weight:600}
+.t-badge{font-size:8.5px;padding:3px 8px;border-radius:99px;font-weight:700;
+  letter-spacing:.5px;flex-shrink:0;white-space:nowrap}
+.tb-weak{background:rgba(239,68,68,.18);color:#fca5a5;border:1px solid rgba(239,68,68,.4)}
+.tb-ok{background:rgba(34,197,94,.15);color:#86efac;border:1px solid rgba(34,197,94,.35)}
+.t-arr{color:var(--mut);font-size:11px;transition:.25s;flex-shrink:0}
+.topic.open .t-arr{transform:rotate(180deg)}
+.t-body{display:none;padding:0 16px 16px;border-top:1px solid var(--brd)}
+.topic.open .t-body{display:block;animation:fade .3s ease}
+.t-body{font-size:14px;line-height:1.75;color:#d8dcea}
+.t-body h4{font-size:12px;color:var(--cursed3);text-transform:uppercase;letter-spacing:1.2px;
+  margin:15px 0 7px;font-weight:700;display:flex;align-items:center;gap:6px}
+.t-body h4::before{content:'';width:3px;height:13px;background:var(--cursed);border-radius:2px}
+.t-body p{margin-bottom:9px}
+.t-body ul,.t-body ol{padding-left:19px;margin-bottom:9px}
+.t-body li{margin-bottom:5px}
+.t-body strong{color:var(--cursed3);font-weight:700}
+.t-body em{color:var(--blue2);font-style:normal;font-weight:600}
+
+/* ===== BOXES INSIDE TOPIC ===== */
+.bx{border-radius:11px;padding:12px 14px;margin:10px 0;font-size:13.5px;line-height:1.7}
+.bx-key{background:rgba(0,176,111,.1);border-left:3px solid var(--cursed);color:#e2e0f5}
+.bx-ex{background:rgba(0,168,255,.08);border-left:3px solid var(--blue);color:#d5f0f7}
+.bx-warn{background:rgba(251,191,36,.09);border-left:3px solid var(--gold);color:#f8ecd0}
+.bx-tit{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;font-weight:800;
+  margin-bottom:6px;display:block}
+.bx-key .bx-tit{color:var(--cursed2)}
+.bx-ex .bx-tit{color:var(--blue2)}
+.bx-warn .bx-tit{color:var(--gold)}
+.think{background:linear-gradient(135deg,rgba(255,195,18,.12),rgba(34,217,141,.1));
+  border:1.5px dashed var(--cursed2);border-radius:12px;padding:13px 15px;margin-top:13px}
+.think-t{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--cursed2);
+  font-weight:800;margin-bottom:5px}
+.think-q{font-size:13.5px;color:#e8e4f8;font-style:italic;line-height:1.65}
+
+/* ===== TABLE ===== */
+.tbl{width:100%;border-collapse:collapse;margin:10px 0;font-size:12.5px;
+  border-radius:9px;overflow:hidden}
+.tbl th{background:rgba(0,176,111,.22);color:var(--cursed3);padding:9px 10px;
+  text-align:left;font-weight:700;font-size:11px;letter-spacing:.5px}
+.tbl td{padding:8px 10px;border-top:1px solid var(--brd);color:#d8dcea}
+.tbl tr:nth-child(even) td{background:rgba(0,176,111,.04)}
+
+/* ===== QUIZ ===== */
+.qcard{background:var(--panel);border:1.5px solid var(--brd);border-radius:14px;
+  margin-bottom:12px;overflow:hidden}
+.qcard.right{border-color:var(--green);box-shadow:0 0 18px rgba(34,197,94,.22)}
+.qcard.wrong{border-color:var(--red);box-shadow:0 0 18px rgba(239,68,68,.22)}
+.q-top{display:flex;align-items:center;justify-content:space-between;
+  padding:9px 15px;background:rgba(0,176,111,.09);border-bottom:1px solid var(--brd)}
+.q-n{font-family:'Fredoka',sans-serif;font-weight:700;font-size:12px;
+  color:var(--cursed3);letter-spacing:1px}
+.q-topic{font-size:9px;color:var(--mut);font-weight:600;letter-spacing:.5px}
+.q-res{font-size:10px;font-weight:800;letter-spacing:.5px}
+.q-txt{padding:15px;font-size:14px;font-weight:600;line-height:1.6;color:#eceffa}
+.q-opts{padding:0 15px 15px;display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;align-items:flex-start;gap:11px;padding:12px 14px;border-radius:11px;
+  border:1.5px solid var(--brd);background:rgba(18,12,34,.6);cursor:pointer;transition:.18s;
+  font-size:13.5px;line-height:1.5;color:#dde1ee}
+.opt:hover{border-color:var(--cursed2);background:rgba(0,176,111,.1)}
+.opt.sel-right{background:rgba(34,197,94,.14);border-color:var(--green);color:#bbf7d0}
+.opt.sel-wrong{background:rgba(239,68,68,.14);border-color:var(--red);color:#fecaca}
+.opt.show-right{background:rgba(34,197,94,.09);border-color:rgba(34,197,94,.55);color:#bbf7d0}
+.opt.dis{cursor:default;opacity:.72}
+.opt-l{width:26px;height:26px;border-radius:7px;flex-shrink:0;
+  background:rgba(0,176,111,.22);border:1px solid var(--cursed);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Fredoka',sans-serif;font-weight:700;font-size:12px;color:var(--cursed3)}
+.opt.sel-right .opt-l,.opt.show-right .opt-l{background:rgba(34,197,94,.3);border-color:var(--green);color:#86efac}
+.opt.sel-wrong .opt-l{background:rgba(239,68,68,.3);border-color:var(--red);color:#fca5a5}
+.q-fb{display:none;padding:0 15px 15px}
+.q-fb.on{display:block;animation:fade .3s}
+.fb-in{padding:11px 13px;border-radius:10px;font-size:12.5px;line-height:1.6}
+.fb-ok{background:rgba(34,197,94,.11);border-left:3px solid var(--green);color:#c8f5d5}
+.fb-no{background:rgba(239,68,68,.11);border-left:3px solid var(--red);color:#fcd4d4}
+
+/* ===== DIAGNOSIS ===== */
+.diag{background:linear-gradient(135deg,var(--panel2),var(--panel));
+  border:2px solid var(--cursed);border-radius:12px;padding:20px;margin:18px 0;
+  position:relative;overflow:hidden;box-shadow:0 0 35px rgba(0,176,111,.3)}
+.diag::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 80% 15%,rgba(255,195,18,.22),transparent 60%);pointer-events:none}
+.diag-t{font-family:'Baloo 2',cursive;font-weight:800;font-size:17px;
+  margin-bottom:5px;position:relative;z-index:1}
+.diag-t span{background:linear-gradient(90deg,#6ff0b8,#00a8ff);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.diag-s{font-size:11.5px;color:var(--mut);margin-bottom:15px;position:relative;z-index:1;font-weight:600}
+.score-ring{display:flex;align-items:center;gap:16px;margin-bottom:16px;position:relative;z-index:1}
+.ring{width:82px;height:82px;border-radius:50%;flex-shrink:0;position:relative;
+  display:flex;align-items:center;justify-content:center}
+.ring-n{font-family:'Fredoka',sans-serif;font-weight:700;font-size:25px;line-height:1}
+.ring-p{font-size:9px;color:var(--mut);font-weight:700;letter-spacing:1px}
+.score-info{flex:1;min-width:0}
+.si-rank{font-family:'Baloo 2',cursive;font-weight:800;font-size:16px;margin-bottom:3px}
+.si-txt{font-size:12px;color:var(--mut);line-height:1.5;font-weight:500}
+.gap-list{position:relative;z-index:1}
+.gap-t{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;font-weight:800;
+  color:var(--red);margin-bottom:9px;display:flex;align-items:center;gap:6px}
+.gap{display:flex;align-items:center;gap:11px;background:rgba(239,68,68,.09);
+  border:1.5px solid rgba(239,68,68,.35);border-radius:11px;padding:11px 13px;
+  margin-bottom:8px;cursor:pointer;transition:.2s}
+.gap:hover{background:rgba(239,68,68,.16);border-color:var(--red);transform:translateX(3px)}
+.gap-ic{font-size:17px;flex-shrink:0}
+.gap-in{flex:1;min-width:0}
+.gap-n{font-size:12.5px;font-weight:700;color:#fca5a5;line-height:1.3}
+.gap-m{font-size:10px;color:var(--mut);margin-top:2px;font-weight:600}
+.gap-go{font-size:9px;color:var(--blue2);font-weight:700;letter-spacing:.5px;flex-shrink:0}
+.all-ok{background:rgba(34,197,94,.09);border:1.5px solid rgba(34,197,94,.4);
+  border-radius:12px;padding:16px;text-align:center;position:relative;z-index:1}
+.ao-ic{font-size:30px;display:block;margin-bottom:6px}
+.ao-t{font-family:'Baloo 2',cursive;font-weight:800;font-size:14px;color:#86efac;margin-bottom:3px}
+.ao-s{font-size:11.5px;color:#a7d8b5;font-weight:500}
+
+/* ===== BUTTONS ===== */
+.btns{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px;position:relative;z-index:1}
+.btn{flex:1;min-width:130px;padding:12px 16px;border-radius:11px;border:none;
+  font-family:'Inter',sans-serif;font-weight:700;font-size:12.5px;cursor:pointer;transition:.2s}
+.btn-p{background:linear-gradient(135deg,#00b06f,#ffc312);color:#fff;
+  box-shadow:0 4px 18px rgba(0,176,111,.45)}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,176,111,.6)}
+.btn-b{background:linear-gradient(135deg,#0077cc,#00a8ff);color:#03212b;
+  box-shadow:0 4px 18px rgba(0,168,255,.4)}
+.btn-b:hover{transform:translateY(-2px)}
+.btn-g{background:transparent;border:1.5px solid var(--brd);color:var(--mut)}
+.btn-g:hover{border-color:var(--cursed);color:var(--txt)}
+
+/* ===== EMPTY / START ===== */
+.startq{text-align:center;padding:36px 20px;background:var(--panel);
+  border:1.5px dashed var(--brd);border-radius:12px}
+.sq-ic{font-size:44px;display:block;margin-bottom:12px}
+.sq-t{font-family:'Baloo 2',cursive;font-weight:800;font-size:16px;margin-bottom:6px}
+.sq-s{font-size:12.5px;color:var(--mut);line-height:1.6;margin-bottom:16px;font-weight:500}
+
+/* ===== HOME ===== */
+.hero{text-align:center;padding:26px 16px 20px}
+.hero-mark{width:74px;height:74px;margin:0 auto 14px;border-radius:14px;
+  background:linear-gradient(135deg,#00b06f,#ffc312,#00a8ff);
+  display:flex;align-items:center;justify-content:center;font-size:36px;
+  box-shadow:0 0 45px rgba(0,176,111,.6);animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1);box-shadow:0 0 45px rgba(0,176,111,.6)}
+  50%{transform:scale(1.06);box-shadow:0 0 62px rgba(0,176,111,.85)}}
+.hero-t{font-family:'Baloo 2',cursive;font-weight:800;
+  font-size:clamp(21px,6vw,31px);line-height:1.15;margin-bottom:8px}
+.hero-t span{background:linear-gradient(90deg,#6ff0b8,#00a8ff,#6ff0b8);
+  background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:shine 4s linear infinite}
+@keyframes shine{to{background-position:200% center}}
+.hero-s{font-size:13px;color:var(--mut);line-height:1.6;max-width:430px;margin:0 auto;font-weight:500}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:20px}
+.mcard{background:var(--panel);border:1.5px solid var(--brd);border-radius:14px;
+  padding:15px 13px;cursor:pointer;transition:.25s;position:relative;overflow:hidden}
+.mcard:hover{border-color:var(--cursed);transform:translateY(-3px);
+  box-shadow:0 8px 26px rgba(0,176,111,.3)}
+.mc-date{font-family:'Fredoka',sans-serif;font-weight:700;font-size:11px;
+  color:var(--blue2);letter-spacing:1px;margin-bottom:6px}
+.mc-ic{font-size:25px;display:block;margin-bottom:7px}
+.mc-n{font-size:12.5px;font-weight:700;line-height:1.3;margin-bottom:8px}
+.mc-bar{height:5px;background:#1c3252;border-radius:99px;overflow:hidden}
+.mc-fill{height:100%;background:linear-gradient(90deg,#00b06f,#00a8ff);
+  border-radius:99px;transition:width .5s;width:0%}
+.mc-pct{font-size:9.5px;color:var(--mut);margin-top:4px;font-weight:700}
+
+/* ===== FOOTER ===== */
+.foot{text-align:center;padding:26px 16px;color:#3d5a80;font-size:10px;
+  line-height:1.8;letter-spacing:.5px;position:relative;z-index:10}
+.foot b{color:#5f83ad}
+@media(max-width:420px){
+  .modes{grid-template-columns:1fr}
+  .mgrid{grid-template-columns:1fr 1fr}
+}
+
+/* ===== BLOCOS 3D ===== */
+.brand-mark,.hero-mark{box-shadow:0 5px 0 rgba(0,0,0,.35),0 0 25px rgba(0,176,111,.5)!important}
+.btn-p,.btn-b{box-shadow:0 4px 0 rgba(0,0,0,.35)!important;border-bottom:none!important}
+.btn-p:active,.btn-b:active{transform:translateY(3px)!important;box-shadow:0 1px 0 rgba(0,0,0,.35)!important}
+.mode.on,.ntab.on{box-shadow:0 3px 0 rgba(0,0,0,.3),0 0 16px rgba(0,176,111,.35)!important}
+.opt{box-shadow:0 2px 0 rgba(0,0,0,.25)}
+.opt:active{transform:translateY(2px);box-shadow:none}
+
+/* ===== TELA DE LOGIN ===== */
+#gate{position:fixed;inset:0;z-index:9999;background:#0a1526;
+  display:flex;align-items:center;justify-content:center;padding:22px;overflow-y:auto}
+#gate.hide{display:none}
+.g-bg{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.g-bg::before{content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(37,64,95,.4) 2px,transparent 2px),
+  linear-gradient(90deg,rgba(37,64,95,.4) 2px,transparent 2px);background-size:48px 48px;opacity:.6}
+.g-orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.3}
+.g-o1{width:380px;height:380px;background:#00b06f;top:-120px;right:-100px}
+.g-o2{width:300px;height:300px;background:#00a8ff;bottom:-90px;left:-80px}
+.g-box{position:relative;z-index:1;background:#152741;border:3px solid #00b06f;
+  border-radius:16px;padding:32px 26px;max-width:380px;width:100%;text-align:center;
+  box-shadow:0 8px 0 rgba(0,0,0,.4),0 0 45px rgba(0,176,111,.4)}
+.g-mark{width:78px;height:78px;margin:0 auto 16px;border-radius:16px;
+  background:linear-gradient(135deg,#00b06f,#00a8ff);display:flex;align-items:center;
+  justify-content:center;font-size:38px;box-shadow:0 5px 0 rgba(0,0,0,.35),0 0 30px rgba(0,176,111,.6)}
+.g-t{font-family:'Baloo 2',cursive;font-weight:800;font-size:22px;line-height:1.2;margin-bottom:6px}
+.g-t span{background:linear-gradient(90deg,#6ff0b8,#5cc9ff);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.g-s{font-size:12.5px;color:#8ba3c7;line-height:1.6;margin-bottom:22px;font-weight:500}
+.g-lbl{display:block;text-align:left;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;
+  color:#6ff0b8;font-weight:800;margin-bottom:7px}
+.g-inp{width:100%;background:#0e1c33;border:2.5px solid #25405f;border-radius:11px;
+  color:#fff;padding:14px 16px;font-size:17px;font-family:'Fredoka',sans-serif;font-weight:600;
+  text-align:center;letter-spacing:2px;text-transform:uppercase;transition:.2s;outline:none}
+.g-inp:focus{border-color:#00b06f;box-shadow:0 0 0 3px rgba(0,176,111,.25)}
+.g-inp::placeholder{color:#4a6b91;letter-spacing:1px}
+.g-btn{width:100%;margin-top:14px;padding:15px;border:none;border-radius:11px;
+  background:linear-gradient(135deg,#00b06f,#00a8ff);color:#fff;
+  font-family:'Baloo 2',cursive;font-weight:800;font-size:16px;cursor:pointer;
+  box-shadow:0 4px 0 rgba(0,0,0,.35);transition:.15s;letter-spacing:.5px}
+.g-btn:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.35)}
+.g-err{display:none;margin-top:13px;background:rgba(255,71,87,.14);border:2px solid rgba(255,71,87,.45);
+  border-radius:10px;padding:10px 13px;font-size:12.5px;color:#ffb3ba;font-weight:600}
+.g-err.on{display:block;animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.g-foot{margin-top:20px;padding-top:16px;border-top:2px solid #25405f;
+  font-size:10px;color:#3d5a80;line-height:1.7;letter-spacing:.5px}
+.g-foot b{color:#5f83ad}
+.g-owner{background:rgba(255,195,18,.1);border:2px solid rgba(255,195,18,.35);border-radius:10px;
+  padding:10px 13px;margin-bottom:18px;font-size:11.5px;color:#ffd97a;font-weight:600;line-height:1.5}
+</style>
+</head>
+<body>
+<div id="gate">
+  <div class="g-bg"><div class="g-orb g-o1"></div><div class="g-orb g-o2"></div></div>
+  <div class="g-box">
+    <div class="g-mark">🎮</div>
+    <div class="g-t">SERVIDOR DE<br><span>ESTUDOS</span></div>
+    <div class="g-s">Este servidor é <strong style="color:#6ff0b8">privado</strong>.<br>Digite o código de acesso para entrar.</div>
+    <div class="g-owner" id="gOwner">🔒 Servidor de <strong id="gNome">—</strong></div>
+    <label class="g-lbl" for="gCod">Código de acesso</label>
+    <input class="g-inp" id="gCod" placeholder="XXX-0000" autocomplete="off" maxlength="14">
+    <button class="g-btn" onclick="entrar()">▶ ENTRAR NO SERVIDOR</button>
+    <div class="g-err" id="gErr">❌ Código inválido. Confira o código enviado junto com o link.</div>
+    <div class="g-foot">
+      <b>LB STUDY APP</b> · by LB AI SOLUTIONS<br>
+      Acesso individual e intransferível<br>
+      Dúvidas: (19) 99233-0187
+    </div>
+  </div>
+</div>
+<div class="bg-layer"><div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div></div>
+<div class="scan"></div>
+
+<div class="hud"><div class="hud-in">
+  <div class="hud-top">
+    <div class="brand">
+      <div class="brand-mark">🎮</div>
+      <div class="brand-txt">
+        <div class="brand-t" id="hudNome">SERVIDOR</div>
+        <div class="brand-s" id="hudSub">—</div>
+      </div>
+    </div>
+    <div class="rank-box">
+      <div><div class="rank-lbl">Level</div><div class="rank-val" id="rank">NOOB</div></div>
+    </div>
+  </div>
+  <div class="ce-wrap">
+    <div class="ce-head"><span>Barra de XP</span><span id="ceTxt">0 / 0 fases</span></div>
+    <div class="ce-bar"><div class="ce-fill" id="ceFill"></div></div>
+  </div>
+</div></div>
+
+<div class="nav"><div class="nav-in" id="navIn"></div></div>
+<div class="main" id="main"></div>
+
+<div class="foot">
+  <b>LB STUDY APP</b> · by LB AI SOLUTIONS<br>
+  Método Liza Becker · Estudo ativo com base na Curva do Esquecimento (Ebbinghaus)<br>
+  <span id="ftLic">—</span>
+</div>
+<script>
+/* ═══════════════════════════════════════════════════════
+   CONFIGURAÇÃO DO ALUNO — ALTERE APENAS ESTE BLOCO
+   para replicar o app para outra família
+   ═══════════════════════════════════════════════════════ */
+const ALUNO = {
+  nome:     "Miguel",               // aparece em todo o app
+  turma:    "5º Ano A",
+  escola:   "Colégio Conexão",
+  bimestre: "3º Bimestre",
+  codigo:   "MIG-2609",             // código de acesso desta família
+  ordem:    ["hi","pt","mt","en","ge","ci"]  // ordem das matérias no app
+};
+// Códigos das matérias: pt=Português · mt=Matemática · hi=História
+//                       en=Inglês · ge=Geografia · ci=Ciências
+/* ═══════════════════════════════════════════════════════ */
+
+/* ---------- LOGIN ---------- */
+function entrar(){
+  const v = (document.getElementById('gCod').value||'').trim().toUpperCase();
+  if(v === ALUNO.codigo.toUpperCase()){
+    try{ localStorage.setItem('lb_acesso_'+ALUNO.codigo,'1'); }catch(e){}
+    document.getElementById('gate').classList.add('hide');
+  } else {
+    const er=document.getElementById('gErr');
+    er.classList.remove('on'); void er.offsetWidth; er.classList.add('on');
+    document.getElementById('gCod').value='';
+  }
+}
+function initGate(){
+  document.getElementById('gNome').textContent = ALUNO.nome;
+  let liberado=false;
+  try{ liberado = localStorage.getItem('lb_acesso_'+ALUNO.codigo)==='1'; }catch(e){}
+  if(liberado) document.getElementById('gate').classList.add('hide');
+  const inp=document.getElementById('gCod');
+  inp.addEventListener('keydown',e=>{ if(e.key==='Enter') entrar(); });
+}
+initGate();
+
+const DB = {
+pt:{n:"Língua Portuguesa",d:"21/09",ic:"📜",
+topicos:[
+{id:"pt1",nome:"Pontuação e Sinais Gráficos",meta:"Apostila pp. 18 a 21",
+html:`<p>Toda técnica precisa de <strong>controle</strong>. Na escrita, quem controla o ritmo, a pausa e a intenção são os <strong>sinais de pontuação</strong>. Sem eles, o texto vira energia descontrolada.</p>
+<h4>Sinais que organizam o texto</h4>
+<div class="bx bx-key"><span class="bx-tit">Domínio 1 — Organização</span>
+A <strong>vírgula</strong>, o <strong>ponto-final</strong> e os <strong>dois-pontos</strong> servem para organizar o texto.</div>
+<h4>Sinais que dão emoção</h4>
+<div class="bx bx-key"><span class="bx-tit">Domínio 2 — Intenção</span>
+O <strong>ponto de interrogação</strong> expressa sentido de pergunta.<br>
+O <strong>ponto de exclamação</strong> enfatiza exaltação, grito ou emoção.</div>
+<h4>Sinais gráficos</h4>
+<div class="bx bx-key"><span class="bx-tit">Domínio 3 — Marcação</span>
+<strong>Travessões</strong> e <strong>aspas</strong> marcam fala ou citação.<br>
+<strong>Parênteses</strong> separam exemplos ou informações do texto.<br>
+<strong>Reticências</strong> indicam pensamento ou fala interrompidos, ou trecho omitido.<br>
+<strong>Ponto e vírgula</strong> marca pausas mais longas que a vírgula.</div>
+<h4>Os três usos da vírgula</h4>
+<div class="bx bx-ex"><span class="bx-tit">Uso 1 — Enumerar itens</span>
+<em>O médico, o técnico e o preparador físico estavam pedindo falta.</em></div>
+<div class="bx bx-ex"><span class="bx-tit">Uso 2 — Acréscimo de explicação</span>
+<em>O médico, impaciente, entrou em campo para atender o jogador caído.</em><br>
+<em>Anísio, o jogador de ouro, não está em campo hoje.</em></div>
+<div class="bx bx-ex"><span class="bx-tit">Uso 3 — Vocativo (chamar alguém)</span>
+<em>Juiz, não foi marcado o impedimento nesse jogador!</em><br>
+<em>Anísio, como você se sente por não poder jogar hoje?</em></div>
+<h4>Vírgula ou parênteses?</h4>
+<p>As duas frases dizem a mesma coisa, mas com destaques diferentes:</p>
+<div class="bx bx-warn"><span class="bx-tit">Compare</span>
+Eu vi jogar o maior atleta do futebol<strong>,</strong> o esporte coletivo mais praticado no mundo<strong>,</strong> em um campo de várzea.<br><br>
+Eu vi jogar o maior atleta do futebol <strong>(</strong>o esporte coletivo mais praticado no mundo<strong>)</strong> em um campo de várzea.<br><br>
+➜ Os <strong>parênteses</strong> dão <strong>maior destaque visual</strong> ao acréscimo de informação.</div>
+<h4>Reescrevendo com pontuação</h4>
+<div class="bx bx-ex"><span class="bx-tit">Treino de precisão</span>
+Sem pontuação: <em>Os esportes mais populares do Brasil são futebol vôlei natação capoeira judô</em><br>
+Com pontuação: <strong>Os esportes mais populares do Brasil são: futebol, vôlei, natação, capoeira e judô.</strong><br><br>
+Sem pontuação: <em>Os melhores jogadores brasileiros de todos os tempos foram Formiga Pelé Sócrates Ronaldinho Garrincha</em><br>
+Com pontuação: <strong>Os melhores jogadores brasileiros de todos os tempos foram: Formiga, Pelé, Sócrates, Ronaldinho e Garrincha.</strong></div>
+<h4>A função das aspas</h4>
+<p>No trecho da crônica de Márcio Nogueira, as aspas foram usadas para <strong>marcar a fala de uma personagem</strong> — e não apenas para destacar expressões populares.</p>
+<div class="bx bx-ex"><span class="bx-tit">Mesmo uso das aspas</span>
+✅ Ela disse: "Foi pênalti". Mas o juiz não apitou.<br>
+✅ Minha técnica queria me animar, "Você é o melhor!".<br>
+❌ Essa era "aquela bola" que eles esperavam o jogo todo. <em>(aqui é destaque, não fala)</em></div>
+<div class="think"><div class="think-t">🎮 Pausa pra pensar</div>
+<div class="think-q">Numa conversa por mensagem, por que "Vem aqui." é tão diferente de "Vem aqui!" e de "Vem aqui?" — sendo as mesmas três palavras?</div></div>`},
+
+{id:"pt2",nome:"Modos Verbais: Indicativo, Imperativo e Subjuntivo",meta:"Apostila pp. 44 a 47",
+html:`<p>Todo verbo carrega uma <strong>intenção</strong>. Os modos verbais são as três formas de canalizar essa intenção: afirmar um fato, dar uma ordem ou expressar uma possibilidade.</p>
+<h4>Modo Indicativo — a certeza</h4>
+<div class="bx bx-key"><span class="bx-tit">Expressa certeza, fatos ou hábitos</span>
+<em>Elas não <strong>jogam</strong> descalças.</em><br>
+<em>Ele <strong>empurrou</strong> a bola com a cadeira de rodas.</em><br>
+<em>Jogar descalço não <strong>é</strong> permitido.</em><br>
+<em>Dar um soco com o punho cerrado <strong>é</strong> uma violação.</em></div>
+<h4>Modo Imperativo — a ordem</h4>
+<div class="bx bx-key"><span class="bx-tit">Expressa ordem, pedido ou conselho</span>
+<em>Não <strong>joguem</strong> descalços!</em><br>
+<em>Não <strong>empurre</strong> a bola com a cadeira de rodas.</em><br>
+<em>Romeu, <strong>vá</strong> até o quarto e <strong>traga</strong> as fotografias.</em><br>
+<em>Filho, <strong>tenha</strong> bastante cuidado ao atravessar a rua.</em></div>
+<h4>Modo Subjuntivo — a possibilidade</h4>
+<div class="bx bx-key"><span class="bx-tit">Indica possibilidade, dúvida ou desejo</span>
+<em>Tomara que o jogador <strong>faça</strong> o gol da vitória.</em><br>
+<em>Se ele <strong>marcasse</strong> o gol, o time seria vencedor.</em><br>
+<em>Se eu <strong>ganhasse</strong> aquele presente ficaria muito feliz.</em><br>
+<em>Espero que você <strong>seja</strong> para sempre meu amigo.</em></div>
+<h4>Identificando na prática</h4>
+<table class="tbl"><tr><th>Oração</th><th>Modo</th></tr>
+<tr><td>Faça três pontos com arremessos fora da área.</td><td>Imperativo</td></tr>
+<tr><td>O jogador fora da quadra não participa da jogada.</td><td>Indicativo</td></tr>
+<tr><td>A bola na mão do árbitro não está em jogo.</td><td>Indicativo</td></tr>
+<tr><td>Não toque o solo com qualquer parte do corpo.</td><td>Imperativo</td></tr>
+<tr><td>A bola não tocou na cadeira durante o passe.</td><td>Indicativo</td></tr>
+<tr><td>Incline para a frente dentro dos limites.</td><td>Imperativo</td></tr></table>
+<h4>Cuidado: mesma forma, sentidos diferentes</h4>
+<div class="bx bx-warn"><span class="bx-tit">Atenção máxima</span>
+<em><strong>Vença</strong> esse jogo, agora!</em> → <strong>Ordem</strong> (imperativo)<br>
+<em>É provável que a equipe <strong>vença</strong> o campeonato.</em> → <strong>Possibilidade</strong> (subjuntivo)<br><br>
+<em><strong>Apaguem</strong> as luzes da quadra ao sair.</em> → <strong>Ordem</strong><br>
+<em>Talvez as luzes da quadra se <strong>apaguem</strong> em poucos minutos.</em> → <strong>Possibilidade</strong><br><br>
+➜ A forma do verbo é igual. O que muda é o <strong>sentido dentro da frase</strong>.</div>
+<h4>Flexionando no subjuntivo</h4>
+<div class="bx bx-ex"><span class="bx-tit">Treino</span>
+A torcida desejava que o time <strong>disputasse</strong> a última vaga. <em>(disputar)</em><br>
+Espera-se que o capitão e o árbitro <strong>negociem</strong> as regras. <em>(negociar)</em><br>
+Para que ele <strong>arrumasse</strong> sua faixa preta, teve de perder muito tempo. <em>(arrumar)</em><br>
+O boxeador esperava que o adversário <strong>lutasse</strong> por mais um round. <em>(lutar)</em></div>
+<div class="think"><div class="think-t">🎮 Pausa pra pensar</div>
+<div class="think-q">"Espero que você venha" e "Venha!" usam a mesma forma do verbo. Como você descobre qual é subjuntivo e qual é imperativo?</div></div>`},
+
+{id:"pt3",nome:"Terminações -ICE e -ISSE",meta:"Apostila pp. 66 a 69",
+html:`<p>Duas terminações que soam quase iguais na fala, mas têm funções completamente diferentes. Confundir as duas é o erro mais comum — e o mais fácil de evitar.</p>
+<h4>A regra que resolve tudo</h4>
+<div class="bx bx-key"><span class="bx-tit">Regra de ouro</span>
+<strong>-ISSE</strong> → sempre <strong>VERBO</strong> no modo subjuntivo, tempo passado<br>
+<strong>-ICE</strong> → sempre <strong>SUBSTANTIVO</strong></div>
+<h4>Terminação -ISSE (verbos)</h4>
+<div class="bx bx-ex"><span class="bx-tit">Verbos no subjuntivo</span>
+medisse · ferisse · fugisse · partisse · subisse · vestisse · cobrisse · pedisse · punisse · reabrisse</div>
+<h4>Terminação -ICE (substantivos)</h4>
+<div class="bx bx-ex"><span class="bx-tit">Substantivos</span>
+vice · vórtice · hélice · índice · ápice · coice · tríplice · apêndice<br><br>
+E também substantivos formados de outros substantivos:<br>
+velhice · crendice · mesmice</div>
+<h4>Vice e visse: mesma sonoridade, sentidos opostos</h4>
+<div class="bx bx-warn"><span class="bx-tit">Não confunda</span>
+<strong>Vice</strong> = quem ganha em segundo lugar. É <strong>substantivo</strong>.<br>
+<strong>Visse</strong> = forma do verbo <strong>ver</strong> no subjuntivo. É <strong>verbo</strong>.<br><br>
+A expressão <em>"visse?"</em> é usada por algumas pessoas para confirmar se a outra pessoa entendeu o que foi dito. Exemplo: <em>"Vamos jogar bola mais tarde, visse?"</em></div>
+<h4>Classificando as palavras</h4>
+<table class="tbl"><tr><th>Palavra</th><th>Classificação</th></tr>
+<tr><td>Pedisse</td><td>VS — verbo no subjuntivo</td></tr>
+<tr><td>Crendice</td><td>SD — substantivo derivado</td></tr>
+<tr><td>Punisse</td><td>VS — verbo no subjuntivo</td></tr>
+<tr><td>Velhice</td><td>SD — substantivo derivado</td></tr>
+<tr><td>Reabrisse</td><td>VS — verbo no subjuntivo</td></tr>
+<tr><td>Apêndice</td><td>SP — substantivo primitivo</td></tr></table>
+<h4>Forma condicional transformada em -ISSE</h4>
+<div class="bx bx-ex"><span class="bx-tit">Modelo</span>
+Se ela tivesse mais tempo, ela <strong>exibiria</strong> uma performance melhor.<br>
+➜ Ela pediu mais tempo para que <strong>exibisse</strong> uma performance melhor.<br><br>
+<strong>nutriria</strong> ➜ <strong>nutrisse</strong> · <strong>exigiria</strong> ➜ <strong>exigisse</strong> · <strong>repetiria</strong> ➜ <strong>repetisse</strong></div>
+<div class="think"><div class="think-t">🎮 Pausa pra pensar</div>
+<div class="think-q">Se alguém escrever "Ele tem um ótimo índisse de acertos", qual foi o erro? Por que "índice" nunca pode ser escrito com -isse?</div></div>`}
+],
+questoes:[
+{t:"pt1",q:"Na frase 'O médico, o técnico e o preparador físico estavam pedindo falta', as vírgulas foram usadas para:",o:["Marcar um vocativo","Enumerar itens","Indicar acréscimo de explicação"],a:1,f:"Exato. Quando listamos vários elementos, a vírgula separa cada item da enumeração."},
+{t:"pt1",q:"Em 'Juiz, não foi marcado o impedimento nesse jogador!', a vírgula indica:",o:["Vocativo — está chamando alguém","Enumeração de itens","Acréscimo de explicação"],a:0,f:"Isso. O vocativo chama ou invoca a pessoa com quem se fala. Aqui está chamando o juiz."},
+{t:"pt1",q:"Em 'Anísio, o jogador de ouro, não está em campo hoje', as vírgulas marcam:",o:["Enumeração","Acréscimo de explicação sobre Anísio","Apenas uma pausa qualquer"],a:1,f:"Correto. 'O jogador de ouro' é uma informação extra que explica quem é Anísio."},
+{t:"pt1",q:"Qual sinal gráfico dá MAIOR destaque visual ao acréscimo de informação?",o:["A vírgula","Os parênteses","O ponto e vírgula"],a:1,f:"Os parênteses isolam a informação de forma mais visível que a vírgula."},
+{t:"pt1",q:"As reticências (...) são usadas para indicar:",o:["Uma pergunta","Pensamento ou fala interrompidos, ou trecho omitido","Uma ordem"],a:1,f:"Exato. As reticências mostram que algo ficou incompleto ou foi omitido."},
+{t:"pt1",q:"Em «Ela disse: “Foi pênalti”. Mas o juiz não apitou.», as aspas servem para:",o:["Destacar uma expressão popular","Marcar a fala de uma personagem","Indicar ironia"],a:1,f:"Correto. As aspas aqui reproduzem exatamente o que a personagem falou."},
+{t:"pt1",q:"O ponto e vírgula (;) serve para marcar:",o:["Pausas mais longas que a vírgula","O fim de uma pergunta","Uma citação"],a:0,f:"Isso. O ponto e vírgula fica entre a vírgula e o ponto-final em duração de pausa."},
+{t:"pt2",q:"Na placa 'Não joguem descalços!', o verbo está no modo:",o:["Indicativo","Subjuntivo","Imperativo"],a:2,f:"Correto. É uma ordem dirigida aos jogadores — modo imperativo."},
+{t:"pt2",q:"Em 'Jogar descalço não é permitido', o verbo expressa a ideia de:",o:["Certeza","Possibilidade","Pedido"],a:0,f:"Exato. É uma afirmação de fato, uma certeza — modo indicativo."},
+{t:"pt2",q:"'Tomara que o jogador faça o gol da vitória.' O verbo 'faça' está no modo:",o:["Imperativo","Subjuntivo","Indicativo"],a:1,f:"Isso. Expressa um desejo, não uma certeza nem uma ordem."},
+{t:"pt2",q:"'A bola não tocou na cadeira de rodas durante o passe.' Modo verbal:",o:["Indicativo","Imperativo","Subjuntivo"],a:0,f:"Correto. Relata um fato ocorrido — modo indicativo."},
+{t:"pt2",q:"'Incline para a frente na cadeira de rodas dentro dos limites.' Modo verbal:",o:["Subjuntivo","Imperativo","Indicativo"],a:1,f:"Exato. É uma instrução, uma ordem — modo imperativo."},
+{t:"pt2",q:"'É provável que a equipe vença o campeonato.' O verbo 'vença' expressa:",o:["Ordem","Possibilidade","Hábito"],a:1,f:"Correto. 'É provável' indica que pode acontecer ou não — possibilidade."},
+{t:"pt2",q:"'Apaguem as luzes da quadra ao sair.' O verbo 'apaguem' expressa:",o:["Possibilidade","Ordem","Dúvida"],a:1,f:"Isso. Aqui é uma instrução direta — ordem, modo imperativo."},
+{t:"pt2",q:"Complete no subjuntivo: 'A torcida desejava que o time ___ a última vaga.' (disputar)",o:["disputou","disputasse","dispute"],a:1,f:"Correto. Com 'desejava que', usamos o subjuntivo no passado: disputasse."},
+{t:"pt2",q:"Complete no subjuntivo: 'O boxeador esperava que o adversário ___ por mais um round.' (lutar)",o:["lutasse","lutou","lutará"],a:0,f:"Exato. 'Esperava que' pede o subjuntivo: lutasse."},
+{t:"pt2",q:"O modo subjuntivo se caracteriza por:",o:["Expressar certeza absoluta","Não haver certeza se a ação vai acontecer","Sempre dar ordens"],a:1,f:"Correto. O subjuntivo trabalha no campo da possibilidade, da dúvida e do desejo."},
+{t:"pt3",q:"A terminação -ISSE está sempre ligada a:",o:["Substantivos","Verbos no modo subjuntivo","Adjetivos"],a:1,f:"Exato. -ISSE é marca de verbo no subjuntivo passado: medisse, ferisse, fugisse."},
+{t:"pt3",q:"As palavras terminadas em -ICE são, em geral:",o:["Verbos","Substantivos","Advérbios"],a:1,f:"Correto. Vice, vórtice, hélice, índice — todos substantivos."},
+{t:"pt3",q:"'Ele tem um ótimo ___ de acertos.' Qual completa corretamente?",o:["índisse","índice","indisse"],a:1,f:"Isso. 'Índice' é substantivo, portanto termina em -ICE."},
+{t:"pt3",q:"'Se ele ___ o gol, o time ganharia.' Qual forma completa?",o:["marcice","marcisse","marcasse"],a:2,f:"Correto. É verbo no subjuntivo. Note que a terminação verbal usa S, nunca C."},
+{t:"pt3",q:"O que significa a palavra 'vice' nas charges?",o:["Quem ganha em segundo lugar","Uma forma do verbo ver","Um tipo de esporte"],a:0,f:"Exato. Vice é quem fica em segundo lugar — é substantivo."},
+{t:"pt3",q:"'Visse' e 'vice' têm o mesmo significado?",o:["Sim, são sinônimos","Não — 'visse' é do verbo ver, 'vice' é substantivo","Sim, mudam apenas a grafia"],a:1,f:"Correto. Soam parecido mas são classes gramaticais totalmente diferentes."},
+{t:"pt3",q:"Classifique: 'Crendice' é um:",o:["Verbo no subjuntivo","Substantivo derivado de outro substantivo","Substantivo primitivo"],a:1,f:"Isso. Crendice vem de 'crença' — substantivo derivado, terminado em -ICE."},
+{t:"pt3",q:"Classifique: 'Reabrisse' é um:",o:["Substantivo primitivo","Substantivo derivado","Verbo no modo subjuntivo"],a:2,f:"Correto. Termina em -ISSE, logo é verbo no subjuntivo."},
+{t:"pt3",q:"Transforme para a forma com -ISSE: 'O campeão exigiria uma medalha.'",o:["exigice","exigisse","exijisse"],a:1,f:"Exato. A forma condicional 'exigiria' vira 'exigisse' no subjuntivo."}
+]},
+mt:{n:"Matemática",d:"22/09",ic:"🔢",
+topicos:[
+{id:"mt1",nome:"Ideia de Fração",meta:"Apostila pp. 104 e 105",
+html:`<p>Fração é a técnica de <strong>dividir um inteiro em partes iguais</strong> e trabalhar com algumas dessas partes.</p>
+<h4>A situação do queijo</h4>
+<p>Para fazer pães de queijo, Igor dividiu uma peça de queijo em <strong>3 partes iguais</strong>. Depois ralou <strong>uma</strong> dessas partes.</p>
+<div class="bx bx-key"><span class="bx-tit">A fração da parte ralada</span>
+<strong style="font-size:22px">1/3</strong> — lê-se <strong>um terço</strong><br><br>
+<strong>1</strong> = numerador → indica o número de partes que Igor vai ralar<br>
+<strong>3</strong> = denominador → indica em quantas partes iguais a peça foi dividida</div>
+<div class="bx bx-ex"><span class="bx-tit">Respondendo</span>
+Fração que representa a peça <strong>inteira</strong>: <strong>3/3</strong><br>
+Fração da parte que <strong>não</strong> será ralada: <strong>2/3</strong></div>
+<h4>Como se lê cada fração</h4>
+<p><strong>Denominador menor que 10</strong> → cada fração tem um nome específico:</p>
+<table class="tbl"><tr><th>Fração</th><th>Como se lê</th></tr>
+<tr><td>1/4</td><td>um quarto</td></tr>
+<tr><td>2/5</td><td>dois quintos</td></tr>
+<tr><td>3/8</td><td>três oitavos</td></tr></table>
+<p><strong>Denominador 10, 100 ou 1000</strong> → usamos décimo, centésimo ou milésimo:</p>
+<table class="tbl"><tr><th>Fração</th><th>Como se lê</th></tr>
+<tr><td>7/10</td><td>sete décimos</td></tr>
+<tr><td>9/100</td><td>nove centésimos</td></tr>
+<tr><td>11/1000</td><td>onze milésimos</td></tr></table>
+<p><strong>Denominador maior que 10</strong> (exceto 10, 100, 1000) → acrescenta-se a palavra <strong>avos</strong>:</p>
+<table class="tbl"><tr><th>Fração</th><th>Como se lê</th></tr>
+<tr><td>1/17</td><td>um dezessete avos</td></tr>
+<tr><td>13/29</td><td>treze vinte e nove avos</td></tr>
+<tr><td>17/81</td><td>dezessete oitenta e um avos</td></tr></table>
+<div class="think"><div class="think-t">🎮 Pausa pra pensar</div>
+<div class="think-q">Se uma pizza é dividida em 8 fatias e você come 3, qual fração você comeu? E qual fração sobrou? Some as duas — o que dá?</div></div>`},
+
+{id:"mt2",nome:"Fração de uma Quantidade",meta:"Apostila pp. 106 e 107",
+html:`<p>Aqui a fração deixa de ser só desenho e vira <strong>cálculo</strong>. É a técnica de descobrir quanto vale uma parte de uma quantidade real.</p>
+<h4>O método das trufas</h4>
+<p>Márcia fez <strong>40 trufas</strong>. Recheou <strong>1/8</strong> com morango e <strong>7/8</strong> com maracujá.</p>
+<div class="bx bx-key"><span class="bx-tit">Passo 1 — Calcular 1/8 de 40</span>
+1/8 de 40 é o mesmo que a <strong>oitava parte</strong> de 40.<br>
+Para achar a oitava parte: <strong>40 ÷ 8 = 5</strong><br>
+➜ Márcia fez <strong>5 trufas de morango</strong>.</div>
+<div class="bx bx-key"><span class="bx-tit">Passo 2 — Calcular 7/8 de 40</span>
+Como 1/8 de 40 é igual a 5, então 7/8 de 40 é o mesmo que <strong>7 × 5 = 35</strong><br>
+➜ Márcia fez <strong>35 trufas de maracujá</strong>.</div>
+<div class="bx bx-warn"><span class="bx-tit">A técnica em duas etapas</span>
+1️⃣ Divida a quantidade pelo <strong>denominador</strong><br>
+2️⃣ Multiplique o resultado pelo <strong>numerador</strong></div>
+<h4>Treinando com 30 trufas</h4>
+<div class="bx bx-ex"><span class="bx-tit">Resolução completa</span>
+Márcia fez <strong>30 trufas</strong>. Recheou 1/6 de morango e 3/5 de chocolate.<br><br>
+<strong>Morango — 1/6 de 30:</strong><br>
+30 ÷ 6 = 5 → depois 5 × 1 = <strong>5 trufas</strong><br><br>
+<strong>Chocolate — 3/5 de 30:</strong><br>
+30 ÷ 5 = 6 → depois 6 × 3 = <strong>18 trufas</strong><br><br>
+<strong>Maracujá (o restante):</strong><br>
+30 − 5 − 18 = <strong>7 trufas</strong></div>
+<h4>Problema da viagem</h4>
+<div class="bx bx-ex"><span class="bx-tit">Marília e Mateus</span>
+Viagem total: <strong>600 km</strong>. Já completaram <strong>7/12</strong> do trajeto.<br><br>
+<strong>Quanto já percorreram?</strong><br>
+600 ÷ 12 = 50 → depois 50 × 7 = <strong>350 km</strong><br><br>
+<strong>Quanto falta?</strong><br>
+600 − 350 = <strong>250 km</strong></div>
+<h4>Problema do consumo de água</h4>
+<div class="bx bx-ex"><span class="bx-tit">Colégio — atenção às unidades</span>
+Consumo do mês passado: <strong>360 metros cúbicos</strong> de água.<br>
+Lembre: <strong>1 metro cúbico = 1.000 litros</strong><br><br>
+<strong>a) Quantos litros no mês passado?</strong><br>
+360 × 1.000 = <strong>360.000 litros</strong><br><br>
+<strong>b) Meta deste mês: no máximo 11/18 do total</strong><br>
+360.000 ÷ 18 = 20.000 → depois 20.000 × 11 = <strong>220.000 litros</strong></div>
+<div class="think"><div class="think-t">🎮 Pausa pra pensar</div>
+<div class="think-q">Na conta da água, por que foi preciso transformar metros cúbicos em litros ANTES de calcular a fração? O que aconteceria se você calculasse a fração primeiro?</div></div>`},
+
+{id:"mt3",nome:"Número Misto",meta:"Apostila pp. 111 e 112",
+html:`<p>Nem tudo se divide em pedaços pequenos. Às vezes sobra <strong>um inteiro mais uma parte</strong> — e é aí que entra o número misto.</p>
+<h4>A situação dos bolos</h4>
+<p>Murilo e Noeli compraram juntos <strong>3 bolos de fubá iguais</strong> e precisavam dividir em partes iguais entre os dois.</p>
+<div class="bx bx-key"><span class="bx-tit">Como resolveram</span>
+1️⃣ Cada um ficou com <strong>um bolo inteiro</strong> (2 bolos usados)<br>
+2️⃣ O bolo restante foi dividido em <strong>2 partes iguais</strong><br>
+3️⃣ Cada um ficou com <strong>uma dessas metades</strong><br><br>
+➜ Cada um ficou com <strong>1 bolo inteiro + 1/2 do outro bolo</strong></div>
+<div class="bx bx-key"><span class="bx-tit">O número misto</span>
+<strong style="font-size:20px">1 1/2</strong><br><br>
+Chama-se <strong>número misto</strong> porque é formado por:<br>
+• um <strong>número natural</strong> (1)<br>
+• uma <strong>fração</strong> (1/2)<br><br>
+Lemos: <strong>um inteiro e um meio</strong></div>
+<div class="bx bx-warn"><span class="bx-tit">Convertendo para fração</span>
+O número misto <strong>1 1/2</strong> pode ser escrito na forma de fração como <strong>3/2</strong><br><br>
+Por quê? Cada bolo inteiro vale 2 metades. Então 1 bolo = 2/2, mais 1/2 = <strong>3/2</strong></div>
+<h4>Número misto na receita</h4>
+<div class="bx bx-ex"><span class="bx-tit">Bolo de cenoura</span>
+A receita pede <strong>2 ½ xícaras (chá) de farinha de trigo</strong>.<br>
+Isso significa: <strong>2 xícaras cheias + meia xícara</strong> — ou seja, 3 xícaras no total, sendo a última pela metade.</div>
+<div class="think"><div class="think-t">🎮 Pausa pra pensar</div>
+<div class="think-q">Como você escreveria "dois inteiros e três quartos" na forma de número misto? E como transformaria em fração?</div></div>`},
+
+{id:"mt4",nome:"Frações Equivalentes",meta:"Apostila pp. 113 e 114",
+html:`<p>Duas frações diferentes podem representar <strong>exatamente a mesma quantidade</strong>. Quando isso acontece, elas são <strong>equivalentes</strong>.</p>
+<h4>A dobradura de papel</h4>
+<div class="bx bx-ex"><span class="bx-tit">O que cada um fez</span>
+<strong>Adriano:</strong> dobrou a folha em 2 partes iguais e pintou 1 → pintou <strong>1/2</strong> da folha<br>
+<strong>Leonardo:</strong> dobrou em 4 partes iguais e pintou 2 → pintou <strong>2/4</strong> da folha<br>
+<strong>Rafael:</strong> dobrou em 8 partes iguais e pintou 4 → pintou <strong>4/8</strong> da folha</div>
+<div class="bx bx-key"><span class="bx-tit">A descoberta</span>
+Os três pintaram <strong>partes de mesmo tamanho</strong> da folha!<br><br>
+<strong style="font-size:19px">1/2 = 2/4 = 4/8</strong><br><br>
+Essas são <strong>frações equivalentes</strong>.</div>
+<h4>Como encontrar frações equivalentes</h4>
+<div class="bx bx-key"><span class="bx-tit">A regra</span>
+Para encontrar uma fração equivalente a outra, <strong>multiplicamos ou dividimos</strong> o numerador e o denominador da fração inicial <strong>pelo mesmo número, diferente de zero</strong>.</div>
+<div class="bx bx-ex"><span class="bx-tit">Cálculo de Jean — multiplicando</span>
+5/10 → multiplicou numerador e denominador por <strong>2</strong><br>
+5 × 2 = 10 e 10 × 2 = 20<br>
+➜ <strong>5/10 = 10/20</strong></div>
+<div class="bx bx-ex"><span class="bx-tit">Cálculo de Reinaldo — dividindo</span>
+5/10 → dividiu numerador e denominador por <strong>5</strong><br>
+5 ÷ 5 = 1 e 10 ÷ 5 = 2<br>
+➜ <strong>5/10 = 1/2</strong></div>
+<h4>Completando os esquemas</h4>
+<table class="tbl"><tr><th>Fração</th><th>Operação</th><th>Equivalente</th></tr>
+<tr><td>1/7</td><td>× 3</td><td>3/21</td></tr>
+<tr><td>4/20</td><td>÷ 4</td><td>1/5</td></tr>
+<tr><td>5/6</td><td>× 5</td><td>25/30</td></tr>
+<tr><td>20/50</td><td>÷ 10</td><td>2/5</td></tr>
+<tr><td>3/13</td><td>× 2</td><td>6/26</td></tr>
+<tr><td>25/100</td><td>÷ 25</td><td>1/4</td></tr></table>
+<div class="bx bx-warn"><span class="bx-tit">Verificando equivalência</span>
+✅ <strong>2/3 e 4/6 SÃO equivalentes</strong> → 2×2=4 e 3×2=6 (multiplicou tudo por 2)<br>
+❌ 3/7 e 6/7 não são → o denominador não mudou<br>
+❌ 4/5 e 12/10 não são → 4×3=12 mas 5×3=15, não 10</div>
+<div class="think"><div class="think-t">🎮 Pausa pra pensar</div>
+<div class="think-q">Por que a regra diz "por um mesmo número, DIFERENTE DE ZERO"? O que aconteceria se multiplicássemos tudo por zero?</div></div>`},
+
+{id:"mt5",nome:"As Quatro Operações",meta:"Conteúdo complementar do cronograma",
+html:`<p>As quatro operações são a base de qualquer cálculo. Nesta prova, elas aparecem principalmente <strong>dentro dos problemas de fração</strong> — por isso o domínio precisa ser total.</p>
+<h4>Adição e Subtração com reagrupamento</h4>
+<div class="bx bx-ex"><span class="bx-tit">Exemplo resolvido</span>
+<strong>4.287 + 1.936</strong><br>
+Unidades: 7 + 6 = 13 → escreve 3, vai 1<br>
+Dezenas: 8 + 3 + 1 = 12 → escreve 2, vai 1<br>
+Centenas: 2 + 9 + 1 = 12 → escreve 2, vai 1<br>
+Milhares: 4 + 1 + 1 = 6<br>
+➜ Resultado: <strong>6.223</strong></div>
+<div class="bx bx-ex"><span class="bx-tit">Subtração com empréstimo</span>
+<strong>600 − 350 = 250</strong> <em>(igual ao problema da viagem)</em><br>
+<strong>360.000 − 220.000 = 140.000</strong></div>
+<h4>Multiplicação</h4>
+<div class="bx bx-key"><span class="bx-tit">Multiplicar por 10, 100 e 1.000</span>
+× 10 → acrescenta <strong>1 zero</strong>: 360 × 10 = 3.600<br>
+× 100 → acrescenta <strong>2 zeros</strong>: 360 × 100 = 36.000<br>
+× 1.000 → acrescenta <strong>3 zeros</strong>: 360 × 1.000 = <strong>360.000</strong></div>
+<div class="bx bx-ex"><span class="bx-tit">Multiplicação por dois algarismos</span>
+<strong>50 × 7 = 350</strong> <em>(cálculo da viagem)</em><br>
+<strong>7 × 5 = 35</strong> <em>(trufas de maracujá)</em><br>
+<strong>20.000 × 11 = 220.000</strong> <em>(meta de água)</em></div>
+<h4>Divisão</h4>
+<div class="bx bx-key"><span class="bx-tit">Dividir é repartir em partes iguais</span>
+<strong>40 ÷ 8 = 5</strong> → a oitava parte de 40<br>
+<strong>30 ÷ 6 = 5</strong> → a sexta parte de 30<br>
+<strong>30 ÷ 5 = 6</strong> → a quinta parte de 30<br>
+<strong>600 ÷ 12 = 50</strong> → a doze avos parte de 600<br>
+<strong>360.000 ÷ 18 = 20.000</strong></div>
+<div class="bx bx-warn"><span class="bx-tit">Ordem das operações</span>
+Quando há mais de uma operação na mesma expressão:<br>
+1️⃣ Primeiro os <strong>parênteses</strong><br>
+2️⃣ Depois <strong>multiplicação e divisão</strong>, da esquerda para a direita<br>
+3️⃣ Por último <strong>adição e subtração</strong>, da esquerda para a direita<br><br>
+Exemplo: 10 + 2 × 5 = 10 + 10 = <strong>20</strong> (não 60!)</div>
+<div class="think"><div class="think-t">🎮 Pausa pra pensar</div>
+<div class="think-q">No cálculo de fração de quantidade, por que dividimos primeiro e multiplicamos depois? O resultado mudaria se fizesse ao contrário?</div></div>`}
+],
+questoes:[
+{t:"mt1",q:"Igor dividiu o queijo em 3 partes iguais e vai ralar 1 parte. Qual fração representa a parte ralada?",o:["3/1","1/3","2/3"],a:1,f:"Correto. O numerador 1 é a parte ralada; o denominador 3 é o total de partes."},
+{t:"mt1",q:"Na fração 1/3, o número 3 é chamado de:",o:["Numerador","Denominador","Divisor comum"],a:1,f:"Exato. O denominador indica em quantas partes iguais o inteiro foi dividido."},
+{t:"mt1",q:"Qual fração representa a peça de queijo INTEIRA dividida em 3 partes?",o:["1/3","3/3","0/3"],a:1,f:"Isso. Quando todas as partes estão presentes, numerador e denominador são iguais."},
+{t:"mt1",q:"Como se lê a fração 2/5?",o:["Dois cinco avos","Dois quintos","Dois décimos"],a:1,f:"Correto. Denominador menor que 10 tem nome específico: quinto."},
+{t:"mt1",q:"Como se lê a fração 9/100?",o:["Nove centésimos","Nove cem avos","Nove décimos"],a:0,f:"Exato. Denominador 100 sempre lê-se 'centésimos'."},
+{t:"mt1",q:"Como se lê a fração 13/29?",o:["Treze vinte e nove","Treze vinte e nove avos","Treze vintenoves"],a:1,f:"Correto. Denominador maior que 10 (e diferente de 10, 100, 1000) recebe 'avos'."},
+{t:"mt2",q:"Márcia fez 40 trufas e recheou 1/8 de morango. Quantas trufas de morango?",o:["8","5","40"],a:1,f:"Isso. 40 ÷ 8 = 5 trufas de morango."},
+{t:"mt2",q:"Se 1/8 de 40 é igual a 5, quanto é 7/8 de 40?",o:["35","12","28"],a:0,f:"Correto. 7 × 5 = 35 trufas de maracujá."},
+{t:"mt2",q:"Qual é a ordem correta para calcular fração de uma quantidade?",o:["Multiplicar pelo denominador e dividir pelo numerador","Dividir pelo denominador e multiplicar pelo numerador","Somar numerador e denominador"],a:1,f:"Exato. Primeiro divide pelo denominador, depois multiplica pelo numerador."},
+{t:"mt2",q:"Márcia fez 30 trufas e recheou 3/5 de chocolate. Quantas trufas de chocolate?",o:["15","18","6"],a:1,f:"Correto. 30 ÷ 5 = 6, depois 6 × 3 = 18 trufas."},
+{t:"mt2",q:"A viagem tem 600 km e já completaram 7/12. Quantos km percorreram?",o:["350 km","250 km","420 km"],a:0,f:"Isso. 600 ÷ 12 = 50, depois 50 × 7 = 350 km."},
+{t:"mt2",q:"Se já percorreram 350 km de um total de 600 km, quantos faltam?",o:["350 km","300 km","250 km"],a:2,f:"Correto. 600 − 350 = 250 km restantes."},
+{t:"mt2",q:"O colégio consumiu 360 metros cúbicos de água. Quantos litros isso representa?",o:["3.600 litros","36.000 litros","360.000 litros"],a:2,f:"Exato. 1 metro cúbico = 1.000 litros. Logo 360 × 1.000 = 360.000 litros."},
+{t:"mt3",q:"Murilo e Noeli dividiram 3 bolos entre 2 pessoas. Quanto ficou para cada um?",o:["1 bolo e meio","2 bolos","Meio bolo"],a:0,f:"Correto. Cada um ficou com 1 bolo inteiro + 1/2 do bolo restante."},
+{t:"mt3",q:"O número 1 1/2 é chamado de:",o:["Fração equivalente","Número misto","Número decimal"],a:1,f:"Exato. É misto porque combina um número natural (1) e uma fração (1/2)."},
+{t:"mt3",q:"Como se lê o número misto 1 1/2?",o:["Um sobre dois","Um inteiro e um meio","Um e dois"],a:1,f:"Correto. Lemos a parte inteira e depois a fração."},
+{t:"mt3",q:"O número misto 1 1/2 escrito na forma de fração é:",o:["1/2","2/3","3/2"],a:2,f:"Isso. Cada inteiro vale 2 metades: 2/2 + 1/2 = 3/2."},
+{t:"mt3",q:"A receita pede 2 ½ xícaras de farinha. Isso significa:",o:["2 xícaras cheias e mais meia xícara","2 xícaras pela metade","5 xícaras"],a:0,f:"Correto. O número misto indica 2 inteiros mais a metade de outro."},
+{t:"mt4",q:"Adriano pintou 1/2, Leonardo 2/4 e Rafael 4/8 da folha. O que isso mostra?",o:["Que são frações equivalentes","Que Rafael pintou mais","Que Adriano pintou menos"],a:0,f:"Exato. As três representam exatamente a mesma quantidade da folha."},
+{t:"mt4",q:"Para encontrar uma fração equivalente, devemos:",o:["Somar o mesmo número ao numerador e denominador","Multiplicar ou dividir os dois pelo mesmo número, diferente de zero","Multiplicar só o numerador"],a:1,f:"Correto. A operação precisa ser feita nos DOIS termos, com o mesmo número."},
+{t:"mt4",q:"Jean multiplicou 5/10 por 2 em cima e embaixo. Qual fração obteve?",o:["10/20","7/12","5/20"],a:0,f:"Isso. 5 × 2 = 10 e 10 × 2 = 20 → 10/20."},
+{t:"mt4",q:"Reinaldo dividiu 5/10 por 5 em cima e embaixo. Qual fração obteve?",o:["1/5","1/2","5/2"],a:1,f:"Correto. 5 ÷ 5 = 1 e 10 ÷ 5 = 2 → 1/2."},
+{t:"mt4",q:"Complete: 1/7 = ___ /21 (multiplicando por 3)",o:["2","3","7"],a:1,f:"Exato. Se o denominador foi multiplicado por 3, o numerador também: 1 × 3 = 3."},
+{t:"mt4",q:"Complete: 25/100 = 1/___ (dividindo por 25)",o:["4","5","2"],a:0,f:"Correto. 100 ÷ 25 = 4 e 25 ÷ 25 = 1 → 1/4."},
+{t:"mt4",q:"Qual afirmação é VERDADEIRA?",o:["3/7 e 6/7 são equivalentes","2/3 e 4/6 são equivalentes","4/5 e 12/10 são equivalentes"],a:1,f:"Isso. 2×2=4 e 3×2=6 — os dois termos foram multiplicados pelo mesmo número."},
+{t:"mt5",q:"Quanto é 360 × 1.000?",o:["3.600","36.000","360.000"],a:2,f:"Correto. Multiplicar por 1.000 acrescenta três zeros."},
+{t:"mt5",q:"Na expressão 10 + 2 × 5, qual operação deve ser feita primeiro?",o:["A adição (10 + 2)","A multiplicação (2 × 5)","Tanto faz, o resultado é igual"],a:1,f:"Exato. Multiplicação e divisão vêm antes de adição e subtração. Resultado: 20."},
+{t:"mt5",q:"Quanto é 360.000 ÷ 18?",o:["20.000","2.000","200.000"],a:0,f:"Correto. Esse é o primeiro passo para calcular 11/18 de 360.000 litros."},
+{t:"mt5",q:"Na expressão com parênteses (10 + 2) × 5, o resultado é:",o:["20","60","70"],a:1,f:"Isso. Os parênteses vêm primeiro: 12 × 5 = 60."}
+]},
+hi:{n:"História",d:"23/09",ic:"🏛️",
+topicos:[
+{id:"hi1",nome:"O que é Patrimônio e o Patrimônio Mundial",meta:"Apostila pp. 204 e 205",
+html:`<p>Nem toda herança é um objeto que se guarda em casa. Algumas pertencem a um povo inteiro — e outras, à humanidade toda.</p>
+<h4>Os dois sentidos da palavra</h4>
+<div class="bx bx-key"><span class="bx-tit">Sentido 1 — conjunto de bens</span>
+Tudo o que pertence a uma <strong>pessoa, família ou empresa</strong>.</div>
+<div class="bx bx-key"><span class="bx-tit">Sentido 2 — bens culturais</span>
+Os <strong>bens culturais</strong> ou os <strong>recursos naturais</strong> importantes para a história de uma comunidade, de um povo ou de um país.<br><br>
+Esses bens formam o <strong>patrimônio cultural</strong> de um povo.</div>
+<div class="bx bx-warn"><span class="bx-tit">Patrimônio Mundial</span>
+Quando esses bens ou recursos são importantes para <strong>toda a humanidade</strong>, recebem o nome de <strong>Patrimônio Mundial</strong>.</div>
+<h4>Quem cuida disso</h4>
+<p>Os patrimônios mundiais são identificados e preservados pela <strong>Unesco</strong> — Organização das Nações Unidas para a Educação, a Ciência e a Cultura.</p>
+<div class="bx bx-ex"><span class="bx-tit">Números até 2023</span>
+<strong>1.199</strong> bens registrados como Patrimônio Mundial<br>
+Distribuídos por <strong>168 países</strong><br>
+O <strong>Brasil</strong> conta com <strong>23 bens</strong> reconhecidos pela Unesco</div>
+<h4>Os três tipos de Patrimônio Mundial</h4>
+<div class="bx bx-key"><span class="bx-tit">1 — Patrimônio Cultural</span>
+Compreende bens como <strong>monumentos, prédios, obras de arte</strong> e outras manifestações artísticas e culturais de diferentes povos.<br><br>
+<strong>Exemplo:</strong> Centro Histórico da cidade de <strong>Évora, em Portugal</strong>. A cidade foi fundada no período em que a região fazia parte do <strong>Império Romano</strong> e é visitada por turistas até hoje.</div>
+<div class="bx bx-key"><span class="bx-tit">2 — Patrimônio Natural</span>
+Corresponde às <strong>paisagens naturais</strong> e aos <strong>hábitats</strong> de espécies animais e vegetais.<br><br>
+<strong>Exemplo:</strong> <strong>Lagos de Ounianga</strong>, no <strong>Chade</strong>, na África. O local tem <strong>18 lagos</strong> de água doce e salgada que formam belíssimas paisagens naturais.</div>
+<div class="bx bx-key"><span class="bx-tit">3 — Patrimônio Misto</span>
+Compreende elementos <strong>tanto culturais quanto naturais</strong>.<br><br>
+<strong>Exemplo:</strong> <strong>Parque Nacional Tikal</strong>, na <strong>Guatemala</strong>. No parque há construções da civilização <strong>maia</strong>, dos séculos <strong>VI ao IX</strong>, em meio a áreas preservadas de floresta.</div>
+<div class="think"><div class="think-t">🎮 Pausa pra pensar</div>
+<div class="think-q">Por que o Parque Tikal é classificado como Misto e não apenas como Cultural? O que aconteceria se a floresta ao redor fosse destruída?</div></div>`},
+
+{id:"hi2",nome:"Patrimônio Material e Imaterial",meta:"Apostila p. 212",
+html:`<p>Nem todo patrimônio pode ser tocado. Alguns existem apenas enquanto alguém souber <strong>fazer, dançar ou contar</strong>.</p>
+<h4>A nova divisão</h4>
+<p>Você já sabe que a Unesco organiza os Patrimônios Mundiais em três tipos: Cultural, Natural e Misto. Mas há outra categoria importante em relação aos <strong>Patrimônios Culturais</strong>: eles podem ser <strong>Materiais</strong> ou <strong>Imateriais</strong>.</p>
+<div class="bx bx-key"><span class="bx-tit">Patrimônio Material</span>
+<strong>Objetos, monumentos, igrejas e moradias</strong> nos centros históricos das cidades.<br><br>
+➜ São coisas <strong>físicas</strong>, que podem ser tocadas e visitadas.</div>
+<div class="bx bx-key"><span class="bx-tit">Patrimônio Imaterial</span>
+Os <strong>saberes e as técnicas</strong> necessários para produzir algo, as <strong>festividades</strong>, as <strong>danças</strong>, os <strong>rituais</strong> e as <strong>histórias transmitidas de maneira oral</strong>.<br><br>
+➜ Existem no <strong>conhecimento das pessoas</strong> e são passados de geração em geração.</div>
+<h4>Exemplos de Patrimônios Mundiais Imateriais</h4>
+<table class="tbl"><tr><th>Patrimônio</th><th>Local</th><th>O que é</th></tr>
+<tr><td>Caligrafia árabe</td><td>Mundo árabe</td><td>Técnica de escrita manual do alfabeto árabe</td></tr>
+<tr><td>Nsima</td><td>Malawi, África</td><td>Comida da tradição culinária local</td></tr>
+<tr><td>Dança Nora</td><td>Tailândia</td><td>Apresentação de dança tradicional</td></tr>
+<tr><td>Carnaval de Pasto</td><td>Colômbia</td><td>Desfile com fantasias e flautas tradicionais</td></tr></table>
+<div class="bx bx-warn"><span class="bx-tit">Como diferenciar rapidamente</span>
+Pergunte: <em>"Isso pode ser fotografado parado, ou só existe quando alguém faz?"</em><br><br>
+Uma <strong>igreja histórica</strong> está lá parada → <strong>Material</strong><br>
+Uma <strong>dança tradicional</strong> só existe quando alguém dança → <strong>Imaterial</strong></div>
+<div class="think"><div class="think-t">🎮 Pausa pra pensar</div>
+<div class="think-q">A receita de um prato típico da sua família é patrimônio material ou imaterial? O que acontece com ela se ninguém aprender a fazer?</div></div>`},
+
+{id:"hi3",nome:"Marcos de Memória",meta:"Apostila pp. 218 e 219",
+html:`<p>Memória não é só lembrança pessoal. Grupos inteiros criam sinais físicos para não esquecer o que consideram importante.</p>
+<h4>Os dois tipos de memória</h4>
+<div class="bx bx-key"><span class="bx-tit">Memória Individual</span>
+As <strong>lembranças de tudo o que você já viveu</strong> são suas memórias individuais.</div>
+<div class="bx bx-key"><span class="bx-tit">Memória Coletiva</span>
+As lembranças de um <strong>grupo de pessoas</strong> — uma comunidade ou um povo, por exemplo — são chamadas de memória coletiva.</div>
+<h4>O que são marcos de memória</h4>
+<p>Os grupos que têm essa memória coletiva buscam <strong>homenagear as personagens ou os fatos importantes</strong> de diferentes formas:</p>
+<div class="bx bx-ex"><span class="bx-tit">Formas de homenagear</span>
+• Nomeiam <strong>praças, ruas e escolas</strong><br>
+• Criam <strong>hinos e datas comemorativas</strong><br>
+• Constroem <strong>museus, monumentos e prédios</strong></div>
+<div class="bx bx-warn"><span class="bx-tit">Por que são importantes</span>
+Esses marcos ajudam a contar a <strong>história</strong>, a <strong>diversidade</strong>, a <strong>identidade</strong> e a <strong>cultura</strong> de um povo ou de uma comunidade.<br><br>
+Os Patrimônios Mundiais também podem ser considerados importantes marcos de memória para cada povo que os escolheu.</div>
+<h4>Como surgem os marcos de memória</h4>
+<p>Geralmente são definidos pelos <strong>governantes</strong>, ou seja, pelo <strong>poder público</strong>. Com essa definição, lugares significativos para a memória e a história da coletividade passam a ser preservados, tendo sua história divulgada para que todos os cidadãos possam conhecê-la.</p>
+<div class="bx bx-key"><span class="bx-tit">Mudança recente</span>
+A participação de <strong>cidadãos e de movimentos sociais</strong> na criação dos marcos de memória vem sendo cada vez mais valorizada — mostrando que os diversos grupos que compõem a sociedade também devem ter direito a escolher os elementos da história e da memória que os identificam.</div>
+<h4>Três marcos de memória brasileiros</h4>
+<div class="bx bx-ex"><span class="bx-tit">Mercado Ver o Peso — Belém (PA)</span>
+Inaugurado em <strong>1901</strong>, é um marco de memória do município de Belém, no Pará.</div>
+<div class="bx bx-ex"><span class="bx-tit">Monumento à Independência — São Paulo (SP)</span>
+Inaugurado em <strong>1922</strong>, está localizado próximo ao lugar onde <strong>D. Pedro I</strong> teria proclamado a independência do Brasil, em <strong>7 de setembro de 1822</strong>.</div>
+<div class="bx bx-ex"><span class="bx-tit">Monumento a Maria Quitéria — Salvador (BA)</span>
+Fica no bairro da <strong>Liberdade</strong>, em Salvador.<br>
+<strong>Maria Quitéria de Jesus (1792–1853)</strong> foi uma <strong>heroína das guerras que ocorreram na Bahia</strong>, à época da Independência do Brasil.<br>
+O monumento, de autoria de <strong>José P. Barreto</strong>, foi inaugurado em <strong>1953</strong>, pela prefeitura de Salvador.</div>
+<div class="think"><div class="think-t">🎮 Pausa pra pensar</div>
+<div class="think-q">Existe alguma rua, praça ou escola perto da sua casa com nome de pessoa? Quem foi essa pessoa e por que a comunidade decidiu homenageá-la?</div></div>`}
+],
+questoes:[
+{t:"hi1",q:"Quando um bem cultural é importante para toda a humanidade, ele recebe o nome de:",o:["Patrimônio familiar","Patrimônio Mundial","Patrimônio nacional"],a:1,f:"Correto. Patrimônio Mundial é a categoria mais ampla, reconhecida internacionalmente."},
+{t:"hi1",q:"Qual organização identifica e preserva os Patrimônios Mundiais?",o:["Unesco","ONU Verde","Instituto Mundial de Cultura"],a:0,f:"Exato. Unesco = Organização das Nações Unidas para a Educação, a Ciência e a Cultura."},
+{t:"hi1",q:"Até 2023, quantos bens a Unesco havia registrado como Patrimônio Mundial?",o:["199 bens","1.199 bens","11.990 bens"],a:1,f:"Correto. São 1.199 bens distribuídos por 168 países."},
+{t:"hi1",q:"Quantos bens brasileiros são reconhecidos pela Unesco como Patrimônios Mundiais?",o:["23","168","12"],a:0,f:"Isso. O Brasil tem 23 bens reconhecidos."},
+{t:"hi1",q:"O Centro Histórico de Évora, em Portugal, é classificado como Patrimônio Mundial:",o:["Natural","Cultural","Misto"],a:1,f:"Correto. É formado por construções e monumentos — patrimônio cultural."},
+{t:"hi1",q:"Os Lagos de Ounianga, no Chade, são Patrimônio Mundial:",o:["Cultural","Misto","Natural"],a:2,f:"Exato. São 18 lagos que formam paisagens naturais — patrimônio natural."},
+{t:"hi1",q:"Por que o Parque Nacional Tikal, na Guatemala, é Patrimônio Misto?",o:["Porque fica entre dois países","Porque tem construções maias em meio a floresta preservada","Porque foi construído por dois povos diferentes"],a:1,f:"Correto. Misto = elementos culturais (construções maias) e naturais (floresta) juntos."},
+{t:"hi1",q:"As construções maias do Parque Tikal são de quais séculos?",o:["Séculos VI ao IX","Séculos XV ao XVIII","Séculos I ao III"],a:0,f:"Exato. Do século VI ao século IX."},
+{t:"hi2",q:"Objetos, monumentos, igrejas e moradias fazem parte do:",o:["Patrimônio Imaterial","Patrimônio Material","Patrimônio Natural"],a:1,f:"Correto. São bens físicos, que podem ser tocados e visitados."},
+{t:"hi2",q:"Os saberes, as danças, os rituais e as histórias transmitidas oralmente formam o:",o:["Patrimônio Material","Patrimônio Natural","Patrimônio Imaterial"],a:2,f:"Exato. Existem no conhecimento das pessoas, não em objetos físicos."},
+{t:"hi2",q:"A dança Nora, da Tailândia, é um exemplo de patrimônio:",o:["Material","Imaterial","Natural"],a:1,f:"Correto. Uma dança só existe quando alguém a executa — é imaterial."},
+{t:"hi2",q:"A caligrafia árabe é considerada patrimônio imaterial porque:",o:["É uma técnica de escrita transmitida entre as pessoas","É feita em papel caro","Está guardada em museus"],a:0,f:"Isso. É o saber e a técnica que constituem o patrimônio, não o objeto."},
+{t:"hi3",q:"As lembranças de tudo o que VOCÊ já viveu são chamadas de:",o:["Memória coletiva","Memória individual","Marco de memória"],a:1,f:"Correto. Memória individual é pessoal, de cada um."},
+{t:"hi3",q:"As lembranças de uma comunidade ou de um povo são chamadas de:",o:["Memória coletiva","Memória individual","Patrimônio material"],a:0,f:"Exato. É a memória compartilhada por um grupo."},
+{t:"hi3",q:"Qual das opções NÃO é uma forma de criar marcos de memória?",o:["Nomear ruas e praças","Construir museus e monumentos","Apagar registros do passado"],a:2,f:"Correto. Marcos de memória existem justamente para preservar, nunca apagar."},
+{t:"hi3",q:"Quem geralmente define os marcos de memória?",o:["Os governantes, ou seja, o poder público","Apenas os historiadores","As empresas privadas"],a:0,f:"Isso. E recentemente a participação de cidadãos e movimentos sociais vem sendo valorizada."},
+{t:"hi3",q:"O Mercado Ver o Peso, marco de memória de Belém (PA), foi inaugurado em:",o:["1822","1901","1953"],a:1,f:"Correto. Inaugurado em 1901, no município de Belém, no Pará."},
+{t:"hi3",q:"O Monumento à Independência, em São Paulo, foi inaugurado em 1922 próximo ao local onde:",o:["Maria Quitéria lutou","D. Pedro I proclamou a independência em 7/9/1822","A primeira fábrica foi construída"],a:1,f:"Exato. Marca o local histórico da proclamação da independência."},
+{t:"hi3",q:"Quem foi Maria Quitéria de Jesus (1792-1853)?",o:["Uma pintora do século XIX","Uma heroína das guerras na Bahia à época da Independência","A primeira prefeita de Salvador"],a:1,f:"Correto. Seu monumento fica no bairro da Liberdade, em Salvador."},
+{t:"hi3",q:"O monumento a Maria Quitéria, de autoria de José P. Barreto, foi inaugurado em:",o:["1901","1922","1953"],a:2,f:"Isso. Foi inaugurado em 1953 pela prefeitura de Salvador."}
+]},
+en:{n:"Inglês",d:"24/09",ic:"🌐",
+topicos:[
+{id:"en1",nome:"Weather and Seasons",meta:"Unit 5 — pp. 54 e 55",
+html:`<p>A Unit 5 se chama <strong>Weather forecast</strong> (previsão do tempo). A pergunta que abre a unidade é: <em>"What can we do to fight climate change?"</em> — O que podemos fazer para combater as mudanças climáticas?</p>
+<h4>The four seasons — as quatro estações</h4>
+<table class="tbl"><tr><th>English</th><th>Português</th></tr>
+<tr><td>It's <strong>summer</strong>.</td><td>É verão.</td></tr>
+<tr><td>It's <strong>winter</strong>.</td><td>É inverno.</td></tr>
+<tr><td>It's <strong>fall</strong>.</td><td>É outono.</td></tr>
+<tr><td>It's <strong>spring</strong>.</td><td>É primavera.</td></tr></table>
+<h4>Weather conditions — como está o tempo</h4>
+<table class="tbl"><tr><th>English</th><th>Português</th></tr>
+<tr><td>It's <strong>foggy</strong>.</td><td>Está com neblina.</td></tr>
+<tr><td>It's <strong>warm and cloudy</strong>.</td><td>Está morno e nublado.</td></tr>
+<tr><td>It's <strong>hot and sunny</strong>.</td><td>Está quente e ensolarado.</td></tr>
+<tr><td>It's <strong>snowy and freezing</strong>.</td><td>Está nevando e congelante.</td></tr>
+<tr><td>It's <strong>rainy</strong>.</td><td>Está chuvoso.</td></tr></table>
+<div class="bx bx-warn"><span class="bx-tit">Watch out — atenção</span>
+Não confunda <strong>season</strong> (estação do ano) com <strong>weather</strong> (condição do tempo agora).<br><br>
+<em>It's winter</em> → a estação do ano<br>
+<em>It's snowy</em> → como está o tempo neste momento</div>
+<div class="think"><div class="think-t">🎮 Stop and think</div>
+<div class="think-q">In Svalbard, a Norwegian archipelago in the Arctic Ocean, polar bears live on the ice. What happens to them when the ice melts?</div></div>`},
+
+{id:"en2",nome:"Future: Going to and Will",meta:"Unit 5 — pp. 56 e 57",
+html:`<p>Existem duas formas principais de falar sobre o futuro em inglês. Elas não são iguais — cada uma tem um uso.</p>
+<h4>Grammar time — Future with GOING TO and WILL</h4>
+<table class="tbl"><tr><th></th><th>Affirmative</th><th>Negative</th></tr>
+<tr><td><strong>Going to</strong></td><td>She <strong>is going to</strong> use less plastic.</td><td>They are <strong>not going to</strong> recycle less.</td></tr>
+<tr><td><strong>Will</strong></td><td>I <strong>will</strong> plant a tree.</td><td>You <strong>won't</strong> regret it.</td></tr></table>
+<div class="bx bx-key"><span class="bx-tit">GOING TO — plano já decidido</span>
+Usamos quando já existe um <strong>plano ou intenção</strong>.<br><br>
+Forma: <strong>am / is / are + going to + verbo</strong><br>
+<em>I am going to study.</em><br>
+<em>She is going to ride her bike.</em><br>
+<em>We are going to play at the beach.</em></div>
+<div class="bx bx-key"><span class="bx-tit">WILL — decisão do momento ou promessa</span>
+Usamos para <strong>decisões na hora</strong>, promessas e previsões.<br><br>
+Forma: <strong>will + verbo</strong> (igual para todas as pessoas)<br>
+Negativo: <strong>won't</strong> (contração de will not)<br>
+<em>I will plant a tree.</em><br>
+<em>Julia won't take long showers.</em></div>
+<h4>The climate change dialogue</h4>
+<div class="bx bx-ex"><span class="bx-tit">Language corner</span>
+— <em>Yuki, do you know what climate change is?</em><br>
+— <em>Yes, it is a change in the temperature patterns that <strong>is going to</strong> happen over time.</em><br>
+— <em>What <strong>will we do</strong> about it?</em><br>
+— <em>I'm worried about what <strong>is going to</strong> happen to our planet!</em><br>
+— <em>Yes! And <strong>I will</strong> plant a tree.</em><br>
+— <em>I think <strong>we will need</strong> to use less plastic and recycle more.</em><br>
+— <em>With small actions, <strong>we will help</strong> our planet.</em></div>
+<h4>Practice — exercícios resolvidos</h4>
+<div class="bx bx-ex"><span class="bx-tit">Complete with going to</span>
+a. I love <strong>sunny</strong> days. Today we <strong>are going to</strong> play at the beach.<br>
+b. It's <strong>foggy</strong>, but my dad <strong>is going to</strong> run.<br>
+c. <strong>Snowy</strong> days are perfect! I <strong>am going to</strong> go snowboarding.<br>
+d. My aunt lives in San Francisco. She <strong>is going to</strong> ride her bike now.</div>
+<div class="bx bx-ex"><span class="bx-tit">Complete with will or won't</span>
+a. Julia <strong>won't</strong> take long showers.<br>
+b. Sam <strong>will</strong> brush his teeth with the water closed.<br>
+c. Maya <strong>won't</strong> throw plastic bags away.<br>
+d. Matt <strong>will</strong> ride his bike to school every day.</div>
+<div class="think"><div class="think-t">🎮 Stop and think</div>
+<div class="think-q">Why do sentences a and c use "won't"? What do these actions have in common — are they good or bad for the planet?</div></div>`},
+
+{id:"en3",nome:"Reading a Weather Forecast",meta:"Unit 5 — pp. 60 e 61",
+html:`<p>Um <strong>weather forecast</strong> é um gênero textual com características próprias. Saber identificá-las é parte da prova.</p>
+<h4>Características de um weather forecast</h4>
+<div class="bx bx-key"><span class="bx-tit">A weather forecast...</span>
+❌ <strong>has long paragraphs with a lot of text</strong> — NÃO. Textos longos não são característica de previsão do tempo.<br>
+✅ <strong>has images and icons to illustrate information</strong> — SIM. Ícones de sol, nuvem e chuva.<br>
+✅ <strong>uses direct language</strong> — SIM. Linguagem direta e objetiva.<br>
+❌ <strong>uses people's opinions about the weather</strong> — NÃO. Usa dados, não opiniões.</div>
+<h4>Reading the forecast — Maceió, Brazil</h4>
+<div class="bx bx-ex"><span class="bx-tit">Information on the screen</span>
+<strong>City:</strong> Maceió, Brazil<br>
+<strong>Date:</strong> Wednesday, May 26<br>
+<strong>Current temperature:</strong> 26° (max 29° / min 16°)</div>
+<table class="tbl"><tr><th>Day</th><th>Rain</th><th>Wind</th><th>Temp</th></tr>
+<tr><td>Today</td><td>45%</td><td>7 m/s</td><td>29°/16°</td></tr>
+<tr><td>Thu</td><td>7%</td><td>3 m/s</td><td>31°/19° ☀️</td></tr>
+<tr><td>Fri</td><td>15%</td><td>5 m/s</td><td>28°/15°</td></tr>
+<tr><td>Sat</td><td>44%</td><td>2 m/s</td><td>26°/15°</td></tr>
+<tr><td>Sun</td><td>87%</td><td>8 m/s</td><td>23°/14° 🌧️</td></tr>
+<tr><td>Mon</td><td>89%</td><td>6 m/s</td><td>22°/13° 🌧️</td></tr></table>
+<div class="bx bx-warn"><span class="bx-tit">Reading the data</span>
+<strong>When is it hot?</strong> On <strong>Thursday</strong> — 31°, the highest temperature and only 7% of rain.<br>
+<strong>What days are rainy?</strong> <strong>Sunday and Monday</strong> — 87% and 89% chance of rain.</div>
+<h4>Useful vocabulary</h4>
+<table class="tbl"><tr><th>English</th><th>Português</th></tr>
+<tr><td>weather forecast</td><td>previsão do tempo</td></tr>
+<tr><td>temperature</td><td>temperatura</td></tr>
+<tr><td>feels like</td><td>sensação térmica</td></tr>
+<tr><td>wind</td><td>vento</td></tr>
+<tr><td>rain</td><td>chuva</td></tr></table>
+<div class="think"><div class="think-t">🎮 Stop and think</div>
+<div class="think-q">Look at Sunday: 87% of rain. Would you plan a beach day? Why does a forecast use percentages instead of saying just "yes" or "no"?</div></div>`},
+
+{id:"en4",nome:"Eco-anxiety",meta:"Unit 5 — pp. 62 e 63",
+html:`<p>O texto <strong>Eco-anxiety</strong> fala sobre como as mudanças climáticas afetam os sentimentos das pessoas, especialmente dos jovens.</p>
+<h4>What the text says</h4>
+<div class="bx bx-key"><span class="bx-tit">The problem</span>
+<em>Hurricanes, wildfires, and floods</em> (furacões, incêndios florestais e enchentes) <em>may cause injury, hospitalization, death, and damage.</em><br><br>
+Scientists don't understand well yet how extreme weather events can be good or bad for people's mental health, <strong>especially for children</strong>.</div>
+<div class="bx bx-key"><span class="bx-tit">What is eco-anxiety?</span>
+<em>Eco-anxiety is <strong>worrying about an uncertain future</strong> and it is related to <strong>climate change</strong>.</em></div>
+<div class="bx bx-warn"><span class="bx-tit">How it makes people feel</span>
+It can make people feel <strong>afraid, angry, or weak</strong>.<br><br>
+É <strong>mais comum entre jovens</strong>, que têm um futuro mais incerto e veem as mudanças climáticas como um risco.</div>
+<h4>How to manage it — três formas</h4>
+<div class="bx bx-ex"><span class="bx-tit">We can fight negative emotions by:</span>
+1️⃣ <strong>Volunteering</strong> — fazendo trabalho voluntário<br>
+2️⃣ <strong>Organizing or helping in a campaign</strong> na luta contra as mudanças climáticas<br>
+3️⃣ <strong>Promoting positive emotions, like hope</strong>, sem ignorar as negativas, como raiva ou ansiedade</div>
+<h4>Feelings in the text</h4>
+<table class="tbl"><tr><th>Positive feeling</th><th>Negative feelings</th></tr>
+<tr><td>hope <em>(esperança)</em></td><td>afraid <em>(com medo)</em><br>angry <em>(com raiva)</em><br>weak <em>(fraco)</em><br>anxious <em>(ansioso)</em></td></tr></table>
+<div class="bx bx-ex"><span class="bx-tit">Answering the questions</span>
+<strong>What is eco-anxiety?</strong> It is worrying about an uncertain future related to climate change.<br><br>
+<strong>What can eco-anxiety make you feel?</strong> Afraid, angry and weak.<br><br>
+<strong>Why do young people suffer more from eco-anxiety?</strong> Because they have a more uncertain future and see climate change as a risk.</div>
+<div class="think"><div class="think-t">🎮 Stop and think</div>
+<div class="think-q">The text says we should promote hope "without ignoring negative ones". Why is it important not to pretend the bad feelings don't exist?</div></div>`}
+],
+questoes:[
+{t:"en1",q:"How do you say 'outono' in English?",o:["Spring","Fall","Winter"],a:1,f:"Correct! Fall (or autumn) is 'outono' in Portuguese."},
+{t:"en1",q:"Complete: It's ___ . (a imagem mostra neblina)",o:["foggy","sunny","snowy"],a:0,f:"Exactly! Foggy means 'com neblina'."},
+{t:"en1",q:"'It's snowy and freezing' means:",o:["Está quente e ensolarado","Está nevando e congelante","Está morno e nublado"],a:1,f:"Correct! Snowy = nevando, freezing = congelante."},
+{t:"en1",q:"Qual é a diferença entre 'season' e 'weather'?",o:["São sinônimos","Season é estação do ano; weather é o tempo agora","Season é o tempo agora; weather é a estação"],a:1,f:"Exactly! It's winter = estação. It's snowy = condição do tempo agora."},
+{t:"en1",q:"'It's warm and cloudy' significa:",o:["Está morno e nublado","Está frio e chuvoso","Está quente e ensolarado"],a:0,f:"Correct! Warm = morno, cloudy = nublado."},
+{t:"en2",q:"Complete: 'She ___ use less plastic.' (plano já decidido)",o:["will going to","is going to","are going to"],a:1,f:"Correct! With 'she' we use IS going to."},
+{t:"en2",q:"Complete: 'I ___ plant a tree.' (decisão do momento, promessa)",o:["will","am going","won't"],a:0,f:"Exactly! WILL is used for promises and decisions made at the moment."},
+{t:"en2",q:"Qual é a forma negativa de 'will'?",o:["will not = willn't","won't","don't will"],a:1,f:"Correct! Won't is the contraction of 'will not'."},
+{t:"en2",q:"Complete: 'Today we ___ play at the beach.' (com going to)",o:["is going to","am going to","are going to"],a:2,f:"Correct! With 'we' we use ARE going to."},
+{t:"en2",q:"'Julia ___ take long showers.' (ela prometeu economizar água)",o:["will","won't","is going"],a:1,f:"Exactly! Won't = she promises NOT to take long showers."},
+{t:"en2",q:"'Sam ___ brush his teeth with the water closed.' (ação boa para o planeta)",o:["will","won't","not will"],a:0,f:"Correct! Sam promises he WILL do this good action."},
+{t:"en2",q:"'Maya ___ throw plastic bags away.'",o:["will","won't","is going to"],a:1,f:"Exactly! Jogar sacolas plásticas fora é ruim, então ela promete NÃO fazer: won't."},
+{t:"en2",q:"'My aunt lives in San Francisco. She ___ ride her bike now.'",o:["are going to","is going to","am going to"],a:1,f:"Correct! With 'she' the verb is IS going to."},
+{t:"en3",q:"Which city is the weather forecast from?",o:["Maceió, Brazil","Salvador, Brazil","San Francisco, USA"],a:0,f:"Correct! The forecast shows Maceió, Brazil."},
+{t:"en3",q:"What's the date of the weather forecast?",o:["Monday, May 29","Wednesday, May 26","Sunday, June 26"],a:1,f:"Exactly! Wed, May 26."},
+{t:"en3",q:"According to the forecast, when is it hot?",o:["On Sunday","On Monday","On Thursday"],a:2,f:"Correct! Thursday has 31° — the highest temperature and only 7% rain."},
+{t:"en3",q:"What days of the week is it rainy?",o:["Sunday and Monday","Thursday and Friday","Saturday only"],a:0,f:"Exactly! Sunday 87% and Monday 89% chance of rain."},
+{t:"en3",q:"A weather forecast has long paragraphs with a lot of text?",o:["Yes, always","No — it uses direct language and icons","Only on TV"],a:1,f:"Correct! Weather forecasts use short, direct language with icons."},
+{t:"en3",q:"A weather forecast uses people's opinions about the weather?",o:["No — it uses data and measurements","Yes, it's based on opinions","Only the temperature is data"],a:0,f:"Exactly! Forecasts are based on data, not personal opinions."},
+{t:"en4",q:"What is eco-anxiety?",o:["Fear of animals","Worrying about an uncertain future related to climate change","A type of weather"],a:1,f:"Correct! It is worrying about an uncertain future related to climate change."},
+{t:"en4",q:"What can eco-anxiety make people feel?",o:["Happy and calm","Afraid, angry and weak","Hungry and tired"],a:1,f:"Exactly! The text mentions afraid, angry and weak."},
+{t:"en4",q:"Why do young people suffer more from eco-anxiety?",o:["Because they watch more TV","Because they have a more uncertain future and see climate change as a risk","Because they don't study"],a:1,f:"Correct! That's exactly what the text says."},
+{t:"en4",q:"Which is a POSITIVE feeling mentioned in the text?",o:["Hope","Anxious","Weak"],a:0,f:"Exactly! Hope is the positive feeling; afraid, angry, weak and anxious are negative."},
+{t:"en4",q:"Which is NOT a way to manage eco-anxiety, according to the text?",o:["Volunteering","Helping in a campaign against climate change","Ignoring all negative emotions"],a:2,f:"Correct! The text says to promote hope WITHOUT ignoring negative emotions."},
+{t:"en4",q:"According to the text, extreme weather events like hurricanes and floods may cause:",o:["Only happiness","Injury, hospitalization, death and damage","Nothing serious"],a:1,f:"Exactly! That's what the text states."}
+]},
+ge:{n:"Geografia",d:"25/09",ic:"🌍",
+topicos:[
+{id:"ge1",nome:"Recursos Energéticos e Fontes de Energia",meta:"Apostila pp. 244 e 245",
+html:`<p>Toda civilização precisa de energia. A história da humanidade é também a história de <strong>como aprendemos a controlar fontes cada vez mais poderosas</strong>.</p>
+<h4>A primeira fonte: o fogo</h4>
+<div class="bx bx-key"><span class="bx-tit">A descoberta que mudou tudo</span>
+A fonte de energia mais importante que nossos ancestrais descobriram foi o <strong>fogo</strong>.<br><br>
+Quando aprenderam a fazer fogo, puderam usá-lo para:<br>
+• se <strong>aquecer</strong><br>
+• <strong>iluminar</strong> os lugares<br>
+• <strong>cozinhar</strong> alimentos</div>
+<p>Depois de milhões de anos, as pessoas aprenderam a usar o fogo para <strong>fabricar vidro</strong> e <strong>fundir metais</strong>. Também começaram a usar outras fontes: o <strong>vento</strong>, o <strong>carvão</strong>, o <strong>vapor</strong> e o <strong>petróleo</strong>.</p>
+<h4>A classificação das fontes</h4>
+<div class="bx bx-key"><span class="bx-tit">Fontes RENOVÁVEIS</span>
+São aquelas que a natureza consegue <strong>produzir, repor ou reciclar em pouco tempo</strong>.<br><br>
+Exemplos: força da <strong>água</strong>, força do <strong>vento</strong>, <strong>raios solares</strong>.</div>
+<div class="bx bx-key"><span class="bx-tit">Fontes NÃO RENOVÁVEIS</span>
+São aquelas que demoram <strong>milhões de anos</strong> para ser produzidas, repostas ou recicladas pela natureza.<br><br>
+Exemplos: <strong>petróleo</strong> e <strong>gás natural</strong>.</div>
+<h4>As fontes renováveis em detalhe</h4>
+<div class="bx bx-ex"><span class="bx-tit">Biomassa</span>
+Pode ser usada para produzir <strong>eletricidade</strong> e <strong>biocombustíveis</strong>.<br><br>
+A eletricidade é obtida por meio do <strong>biogás</strong>. Para produzir biogás, são usados <strong>lixo orgânico</strong> e <strong>esterco</strong> (fezes de animais).<br><br>
+Os <strong>biocombustíveis</strong> (biodiesel e etanol) são produzidos pela transformação do <strong>milho, cana-de-açúcar, soja, girassol</strong> e outros vegetais em energia.</div>
+<div class="bx bx-ex"><span class="bx-tit">Outras fontes renováveis</span>
+🌬️ <strong>Energia eólica</strong> — produzida pela força do vento<br>
+☀️ <strong>Energia solar</strong> — produzida pela luz e pelo calor do sol<br>
+💧 <strong>Energia hidráulica</strong> — produzida pela força da água</div>
+<h4>Usinas Hidrelétricas</h4>
+<div class="bx bx-warn"><span class="bx-tit">Como funcionam — passo a passo</span>
+A <strong>maior parte da energia elétrica consumida no Brasil</strong> é produzida pela força da água nas usinas hidrelétricas.<br><br>
+1️⃣ A água de um rio ou córrego é <strong>barrada</strong>, formando <strong>represas</strong> (é preciso alagar grandes extensões de terra)<br>
+2️⃣ A água represada é levada por <strong>canos</strong> até as <strong>turbinas</strong><br>
+3️⃣ As turbinas <strong>giram</strong> e transformam o movimento em energia elétrica, com a ação de <strong>geradores</strong><br>
+4️⃣ A água é <strong>devolvida</strong> ao curso de água<br>
+5️⃣ A energia é <strong>transmitida</strong> para os locais onde vai ser consumida<br><br>
+A <strong>Usina de Itaipu</strong>, em Foz do Iguaçu (PR), é a <strong>segunda maior</strong> usina hidrelétrica do Brasil.</div>
+<div class="think"><div class="think-t">🎮 Pausa pra pensar</div>
+<div class="think-q">Para construir uma hidrelétrica é preciso alagar grandes extensões de terra. Quem ou o que pode ser prejudicado por isso?</div></div>`},
+
+{id:"ge2",nome:"Combustíveis Fósseis e Termelétricas",meta:"Apostila pp. 246 e 247",
+html:`<p>As fontes não renováveis ainda são as principais do planeta — e isso tem um preço.</p>
+<h4>O que são combustíveis fósseis</h4>
+<div class="bx bx-key"><span class="bx-tit">Os três combustíveis fósseis</span>
+<strong>Carvão · Gás natural · Petróleo</strong><br><br>
+<em>Fóssil = resto de seres vivos preservados em rochas.</em></div>
+<div class="bx bx-warn"><span class="bx-tit">Como se formam</span>
+1️⃣ Originam-se de <strong>plantas e animais mortos</strong>, chamados de <strong>matéria orgânica</strong><br>
+2️⃣ Com o passar do tempo, a matéria orgânica se <strong>acumula</strong> e é <strong>pressionada</strong> por camadas de solo<br>
+3️⃣ Ao longo de <strong>milhões de anos</strong>, muito <strong>calor e pressão</strong> transformam a matéria orgânica em carvão, gás ou petróleo<br><br>
+A formação do petróleo e do gás natural começou entre <strong>300 e 400 milhões de anos atrás</strong>.</div>
+<h4>Como são usados</h4>
+<p>Os combustíveis fósseis podem ser <strong>queimados</strong> para produzir <strong>calor</strong> e fazer girar os <strong>geradores de eletricidade</strong>. O petróleo também é transformado em <strong>gasolina</strong>, usada para abastecer automóveis.</p>
+<div class="bx bx-ex"><span class="bx-tit">Comparando a poluição</span>
+A queima do <strong>gás natural é mais limpa</strong> que a do petróleo ou a do carvão, pois lança <strong>menos poluentes</strong> na atmosfera. Pode ser utilizado em indústrias, comércio, residências e como combustível em veículos.</div>
+<h4>Usinas Termelétricas</h4>
+<div class="bx bx-key"><span class="bx-tit">Como funcionam</span>
+As usinas termelétricas convertem <strong>energia térmica em energia elétrica</strong>.<br><br>
+A energia térmica resulta do <strong>calor gerado pela queima</strong> de algum tipo de combustível, que pode ser:<br>
+• <strong>fóssil</strong> — carvão, petróleo, gás natural<br>
+• <strong>orgânico</strong> — biomassa constituída de vegetais</div>
+<div class="bx bx-warn"><span class="bx-tit">Usinas Nucleares</span>
+Há outra forma de produzir calor: usando o elemento químico radioativo <strong>urânio</strong>.<br><br>
+O núcleo do urânio é dividido naturalmente em vários pedaços, num processo chamado <strong>fissão nuclear</strong>, que libera <strong>grande quantidade de energia em forma de calor</strong>.<br><br>
+Nas termelétricas, esse calor aquece uma grande quantidade de água, que se transforma em <strong>vapor</strong>, usado para movimentar uma <strong>turbina</strong> que gera eletricidade.</div>
+<div class="bx bx-ex"><span class="bx-tit">Vantagem e problema da energia nuclear</span>
+✅ É uma alternativa <strong>barata</strong> comparada ao uso de carvão e petróleo<br>
+⚠️ Mas gera <strong>muitos resíduos perigosos</strong>, que podem vazar e contaminar o meio ambiente, provocando mortes e doenças</div>
+<div class="think"><div class="think-t">🎮 Pausa pra pensar</div>
+<div class="think-q">Se o gás natural polui menos que o carvão, por que ele ainda é considerado uma fonte não renovável e problemática?</div></div>`},
+
+{id:"ge3",nome:"Do Artesanato à Indústria",meta:"Apostila pp. 252 e 253",
+html:`<p>O modo de fabricar as coisas mudou três vezes na história — e cada mudança transformou a sociedade inteira.</p>
+<h4>O ponto de partida</h4>
+<p>No passado, a humanidade obtinha da natureza <strong>apenas o que precisava para sobreviver</strong>: alimentos e abrigos. Os alimentos vinham da <strong>caça, pesca ou coleta de frutos</strong>. Os abrigos para se proteger do frio, da chuva e de outros animais eram as <strong>cavernas</strong>.</p>
+<p>Com o tempo, os seres humanos passaram a <strong>modificar</strong> cada vez mais os recursos da natureza e a produzir bens materiais, como <strong>vasilhas, móveis e casas</strong>.</p>
+<h4>Fase 1 — O Artesanato</h4>
+<div class="bx bx-key"><span class="bx-tit">Até o século XVI</span>
+O <strong>artesanato</strong> é o modo de produzir bens por meio do <strong>trabalho manual</strong>.<br><br>
+Os artesãos faziam todas as <strong>vestimentas, ferramentas de trabalho, móveis, vasilhas</strong> e outros produtos.<br><br>
+Características do artesão:<br>
+• Trabalhava <strong>sozinho</strong>, com ferramentas simples<br>
+• Era <strong>dono</strong> do estabelecimento, das ferramentas e dos materiais<br>
+• Realizava <strong>todas as etapas</strong> de produção</div>
+<h4>Fase 2 — A Manufatura</h4>
+<div class="bx bx-key"><span class="bx-tit">Século XVII, na Europa</span>
+Houve uma mudança na forma de produzir bens. O <strong>trabalho começou a ser dividido</strong>: as pessoas passaram a cumprir <strong>funções distintas</strong> nas etapas do processo de produção e a receber um <strong>pagamento pelas tarefas</strong> executadas.<br><br>
+A maior parte do trabalho continuava a ser feita de <strong>modo manual</strong>, mas começaram a ser usadas <strong>algumas máquinas simples</strong>.<br><br>
+Esse tipo de produção foi o mais usado até a <strong>metade do século XVIII</strong>.</div>
+<h4>Fase 3 — A Industrialização</h4>
+<div class="bx bx-warn"><span class="bx-tit">Revolução Industrial</span>
+A atividade industrial é resultado de mudanças que começaram na <strong>segunda metade do século XVIII</strong>, na <strong>Inglaterra</strong>, no processo conhecido como <strong>Revolução Industrial</strong>.<br><br>
+Uma dessas mudanças foi a invenção de <strong>máquinas movidas a combustíveis fósseis</strong> — primeiro o <strong>carvão mineral</strong> e, depois, o <strong>petróleo</strong>. Essas máquinas <strong>substituíram grande parte do trabalho manual</strong> e <strong>elevaram a produção</strong>.</div>
+<div class="bx bx-ex"><span class="bx-tit">Comparação das três fases</span>
+<table class="tbl"><tr><th>Fase</th><th>Quando</th><th>Como era</th></tr>
+<tr><td>Artesanato</td><td>Até séc. XVI</td><td>Um artesão faz tudo sozinho</td></tr>
+<tr><td>Manufatura</td><td>Séc. XVII</td><td>Trabalho dividido, máquinas simples</td></tr>
+<tr><td>Indústria</td><td>Desde séc. XVIII</td><td>Máquinas a combustível, produção em massa</td></tr></table></div>
+<div class="think"><div class="think-t">🎮 Pausa pra pensar</div>
+<div class="think-q">O artesão era dono das próprias ferramentas e fazia o produto inteiro. O operário de fábrica faz só uma etapa. O que se ganha e o que se perde nessa mudança?</div></div>`},
+
+{id:"ge4",nome:"Industrialização, Linha de Montagem e Agricultura",meta:"Apostila pp. 254 a 256",
+html:`<p>A fábrica não mudou só a produção. Mudou onde as pessoas moravam, quanto trabalhavam e até a idade em que começavam a trabalhar.</p>
+<h4>A vida nas primeiras fábricas</h4>
+<div class="bx bx-key"><span class="bx-tit">A Revolução Industrial na Inglaterra</span>
+Os produtos passaram a ser feitos <strong>na fábrica</strong>, onde ficavam as máquinas. Os <strong>operários</strong> recebiam um <strong>salário</strong> em troca do trabalho.<br><br>
+A Revolução Industrial começou na <strong>Inglaterra</strong>, onde foram fundadas as primeiras <strong>fábricas de tecido</strong>. Nesse país havia muitos locais para extrair <strong>carvão mineral</strong>, fonte de energia usada para fazer funcionar as <strong>máquinas a vapor</strong>.<br><br>
+Muitas pessoas tiveram de <strong>sair do campo e ir para a cidade</strong> em busca de emprego nas fábricas.</div>
+<div class="bx bx-warn"><span class="bx-tit">As condições de trabalho</span>
+No começo da industrialização, os operários trabalhavam cerca de <strong>16 horas por dia</strong>.<br><br>
+Naquela época, era comum o <strong>trabalho infantil</strong> — mulheres e crianças trabalhavam, por exemplo, no transporte de carvão.<br><br>
+⚖️ <strong>Hoje o trabalho infantil é proibido no Brasil.</strong></div>
+<h4>A Linha de Montagem</h4>
+<div class="bx bx-key"><span class="bx-tit">O que é e para que serve</span>
+Durante o período de industrialização, buscavam-se formas de <strong>otimizar a produção</strong>, reduzindo o tempo de fabricação dos produtos.<br><br>
+Duas inovações fundamentais:<br>
+1️⃣ Implementação de <strong>esteiras de montagem</strong><br>
+2️⃣ <strong>Segmentação das tarefas</strong><br><br>
+As esteiras movimentavam os grandes objetos, enquanto os trabalhadores se posicionavam nas <strong>laterais da esteira</strong>, realizando <strong>tarefas específicas</strong>.</div>
+<div class="bx bx-ex"><span class="bx-tit">O caso Ford-T</span>
+Em <strong>1908</strong>, ano de criação do Ford T, um automóvel era feito de forma <strong>artesanal</strong> e demorava aproximadamente <strong>12 horas</strong> para ser montado.<br><br>
+Seis anos depois, com a linha de montagem, ele era produzido <strong>em massa em apenas 93 minutos</strong>.<br><br>
+A produção foi dividida em <strong>84 etapas distintas</strong>. Foram produzidos mais de <strong>15,4 milhões de veículos</strong> até 1927.</div>
+<div class="bx bx-warn"><span class="bx-tit">O resultado</span>
+A produção tornou-se mais <strong>eficiente</strong>, permitiu <strong>produção em grande escala</strong> e foi possível <strong>padronizar</strong> os produtos — reduzindo os custos e ampliando a capacidade produtiva.</div>
+<h4>A robotização</h4>
+<div class="bx bx-key"><span class="bx-tit">Após a década de 1990</span>
+Muitas linhas de montagem foram modernizadas com a presença de <strong>robôs, operados por humanos</strong>.<br><br>
+Esses robôs <strong>reduzem o tempo</strong> de montagem e podem ser adaptados para diferentes funções, desde que sejam programados.<br><br>
+⚠️ Essa modernização <strong>reduziu o número de trabalhadores</strong> nas fábricas.</div>
+<h4>Mudanças na Agricultura</h4>
+<div class="bx bx-key"><span class="bx-tit">A partir da década de 1950</span>
+A modernização da indústria também atingiu a agricultura. Foram desenvolvidas <strong>técnicas e máquinas</strong> para plantar e colher, além de materiais que aumentam muito a produção agrícola.<br><br>
+Nos dias atuais, plantações extensas no Brasil são feitas em <strong>grandes propriedades</strong>, em que é cultivado <strong>apenas um produto</strong>: soja, cana-de-açúcar e milho.<br><br>
+Com as inovações tecnológicas do campo, foi necessário o trabalho de <strong>profissionais especializados</strong>: engenheiros agrônomos, biólogos e veterinários.</div>
+<div class="bx bx-warn"><span class="bx-tit">Nem todos conseguem modernizar</span>
+No mundo todo existem áreas rurais em que ainda são utilizados <strong>equipamentos e técnicas simples</strong> de cultivo. Isso acontece porque as máquinas modernas são <strong>caras</strong> e muitos agricultores não têm como investir nesses equipamentos.</div>
+<div class="think"><div class="think-t">🎮 Pausa pra pensar</div>
+<div class="think-q">Os robôs deixaram a produção mais rápida e barata, mas reduziram os empregos. Como uma sociedade pode lidar com esse problema?</div></div>`}
+],
+questoes:[
+{t:"ge1",q:"Qual foi a fonte de energia mais importante descoberta por nossos ancestrais?",o:["O vento","O fogo","O petróleo"],a:1,f:"Correto. O fogo permitiu aquecer, iluminar e cozinhar alimentos."},
+{t:"ge1",q:"Fontes de energia RENOVÁVEIS são aquelas que:",o:["A natureza repõe ou recicla em pouco tempo","Demoram milhões de anos para se formar","Nunca se esgotam e nunca poluem"],a:0,f:"Exato. Água, vento e sol são exemplos de fontes renováveis."},
+{t:"ge1",q:"Qual destas é uma fonte NÃO renovável?",o:["Energia solar","Energia eólica","Gás natural"],a:2,f:"Correto. Gás natural e petróleo levam milhões de anos para se formar."},
+{t:"ge1",q:"Para produzir biogás são usados:",o:["Lixo orgânico e esterco","Petróleo e carvão","Água e vento"],a:0,f:"Exato. O biogás vem da decomposição de matéria orgânica."},
+{t:"ge1",q:"Biodiesel e etanol são produzidos a partir de:",o:["Urânio","Milho, cana-de-açúcar, soja e girassol","Carvão mineral"],a:1,f:"Correto. São biocombustíveis, feitos da transformação de vegetais."},
+{t:"ge1",q:"A energia eólica é produzida pela:",o:["Força do vento","Luz do sol","Força da água"],a:0,f:"Exato. Eólica vem de vento; solar do sol; hidráulica da água."},
+{t:"ge1",q:"Nas usinas hidrelétricas, o que faz girar as turbinas?",o:["O vento","A água represada levada por canos","O vapor do carvão queimado"],a:1,f:"Correto. A força da água movimenta as turbinas, que acionam os geradores."},
+{t:"ge1",q:"A Usina de Itaipu, em Foz do Iguaçu (PR), é:",o:["A maior usina nuclear do Brasil","A segunda maior usina hidrelétrica do Brasil","Uma usina termelétrica"],a:1,f:"Exato. É a segunda maior hidrelétrica do país."},
+{t:"ge2",q:"Quais são os três principais combustíveis fósseis?",o:["Carvão, gás natural e petróleo","Água, vento e sol","Urânio, biogás e etanol"],a:0,f:"Correto. Os três derivam de matéria orgânica fossilizada."},
+{t:"ge2",q:"Os combustíveis fósseis se originam de:",o:["Rochas vulcânicas","Plantas e animais mortos (matéria orgânica)","Água do mar evaporada"],a:1,f:"Exato. Calor e pressão ao longo de milhões de anos transformam a matéria orgânica."},
+{t:"ge2",q:"Há quanto tempo começou a formação do petróleo e do gás natural?",o:["300 a 400 milhões de anos atrás","3 a 4 mil anos atrás","100 anos atrás"],a:0,f:"Correto. Por isso são fontes não renováveis."},
+{t:"ge2",q:"A queima de qual combustível fóssil é mais limpa?",o:["Carvão","Petróleo","Gás natural"],a:2,f:"Exato. O gás natural lança menos poluentes na atmosfera."},
+{t:"ge2",q:"As usinas termelétricas convertem:",o:["Energia térmica em energia elétrica","Energia elétrica em térmica","Energia solar em mecânica"],a:0,f:"Correto. O calor da queima gera vapor que move turbinas."},
+{t:"ge2",q:"O processo de divisão do núcleo do urânio chama-se:",o:["Combustão","Fissão nuclear","Evaporação"],a:1,f:"Exato. A fissão nuclear libera grande quantidade de calor."},
+{t:"ge2",q:"Qual é o principal problema da energia nuclear?",o:["É muito cara","Gera resíduos perigosos que podem contaminar o ambiente","Não produz energia suficiente"],a:1,f:"Correto. É barata, mas os resíduos podem vazar e causar doenças e mortes."},
+{t:"ge3",q:"O artesanato é o modo de produzir bens por meio do:",o:["Trabalho em linha de montagem","Trabalho manual","Trabalho com máquinas a vapor"],a:1,f:"Exato. O artesão trabalhava com as próprias mãos e ferramentas simples."},
+{t:"ge3",q:"Qual característica define o artesão até o século XVI?",o:["Realizava todas as etapas de produção sozinho","Trabalhava em uma fábrica","Recebia salário mensal"],a:0,f:"Correto. Era dono do estabelecimento, das ferramentas e dos materiais."},
+{t:"ge3",q:"Na manufatura, no século XVII, o que mudou?",o:["As máquinas substituíram todo o trabalho manual","O trabalho passou a ser dividido em funções distintas","Os produtos ficaram mais caros"],a:1,f:"Exato. Cada pessoa cumpria uma etapa e recebia por tarefa executada."},
+{t:"ge3",q:"Até quando a manufatura foi o modo de produção mais usado?",o:["Até a metade do século XVIII","Até o século XVI","Até 1990"],a:0,f:"Correto. Depois disso veio a Revolução Industrial."},
+{t:"ge3",q:"A Revolução Industrial começou:",o:["Na França, no século XVI","Na Inglaterra, na segunda metade do século XVIII","No Brasil, no século XX"],a:1,f:"Exato. Inglaterra, segunda metade do século XVIII."},
+{t:"ge4",q:"Qual combustível fez funcionar as primeiras máquinas a vapor na Inglaterra?",o:["Petróleo","Carvão mineral","Gás natural"],a:1,f:"Correto. A Inglaterra tinha muitos locais para extrair carvão mineral."},
+{t:"ge4",q:"Quantas horas por dia trabalhavam os operários no começo da industrialização?",o:["Cerca de 8 horas","Cerca de 16 horas","Cerca de 4 horas"],a:1,f:"Exato. Jornadas de cerca de 16 horas diárias, com trabalho infantil comum."},
+{t:"ge4",q:"Quais foram as duas inovações fundamentais da linha de montagem?",o:["Esteiras de montagem e segmentação das tarefas","Robôs e computadores","Carvão e petróleo"],a:0,f:"Correto. As esteiras movimentavam os objetos e cada trabalhador fazia uma tarefa específica."},
+{t:"ge4",q:"Em 1908, o Ford T demorava 12 horas para ser montado. Com a linha de montagem, passou a:",o:["93 minutos","3 horas","30 minutos"],a:0,f:"Exato. A produção foi dividida em 84 etapas distintas."},
+{t:"ge4",q:"Após a década de 1990, o que aconteceu com as linhas de montagem?",o:["Voltaram a ser artesanais","Foram modernizadas com robôs operados por humanos","Foram fechadas no mundo todo"],a:1,f:"Correto. E essa modernização reduziu o número de trabalhadores nas fábricas."},
+{t:"ge4",q:"A modernização da agricultura aconteceu a partir de qual década?",o:["1950","1990","1850"],a:0,f:"Exato. Desde então foram criadas técnicas e máquinas para plantar e colher."},
+{t:"ge4",q:"Quais produtos são cultivados em grandes propriedades no Brasil hoje?",o:["Soja, cana-de-açúcar e milho","Apenas café","Apenas trigo"],a:0,f:"Correto. São monoculturas — cultivo de apenas um produto por área."},
+{t:"ge4",q:"Por que nem todos os produtores rurais usam equipamentos modernos?",o:["Porque preferem o método antigo","Porque as máquinas modernas são caras e não têm como investir","Porque é proibido por lei"],a:1,f:"Exato. O custo dos equipamentos é o principal obstáculo."}
+]},
+ci:{n:"Ciências",d:"28/09",ic:"⚡",
+topicos:[
+{id:"ci1",nome:"O que é Energia e suas Formas",meta:"Apostila pp. 172 e 173",
+html:`<p>Tudo o que acontece no mundo acontece por causa da <strong>energia</strong>. Sem ela, a matéria existiria — mas nada se moveria, nada mudaria.</p>
+<h4>Matéria e energia</h4>
+<p>Quando observamos o mundo, vemos muita <strong>matéria</strong>: seres vivos, objetos, águas, rochas, ar. Mas esse mundo está sempre <strong>se transformando</strong>: folhas caem, animais correm, há vento, as águas evaporam, chove, luzes são acesas à noite.</p>
+<div class="bx bx-key"><span class="bx-tit">A regra fundamental</span>
+Toda ação no mundo ocorre porque, além da matéria, existe a <strong>energia</strong>.<br><br>
+Assim como a matéria, a energia <strong>não surge nem desaparece — ela se transforma</strong>.</div>
+<div class="bx bx-ex"><span class="bx-tit">Exemplos de transformação</span>
+A energia <strong>química</strong> dos alimentos pode transformar-se em energia <strong>térmica</strong>, elevando a temperatura do corpo.<br><br>
+Nas lâmpadas, a energia <strong>elétrica</strong> é transformada em energia <strong>luminosa</strong> e <strong>térmica</strong>.</div>
+<h4>As cinco formas de energia</h4>
+<div class="bx bx-key"><span class="bx-tit">1 — Energia Mecânica</span>
+É a energia associada ao <strong>movimento dos corpos</strong>.<br><br>
+• <strong>Energia cinética</strong> — quando o corpo está de fato em movimento<br>
+• <strong>Energia potencial</strong> — quando tem energia que lhe permite entrar em movimento<br><br>
+<em>No pêndulo, a esfera suspensa tem energia potencial. Quando a esfera desce, a energia potencial é transformada em energia cinética.</em></div>
+<div class="bx bx-key"><span class="bx-tit">2 — Energia Luminosa</span>
+É a energia que se manifesta como <strong>luz visível</strong>. É gerada pelo <strong>Sol</strong>, por <strong>raios</strong>, por <strong>combustão</strong>, entre outros.<br><br>
+Como os materiais reagem à luz:<br>
+• <strong>Transparentes</strong> — permitem a passagem completa da luz<br>
+• <strong>Opacos</strong> — absorvem completamente a energia<br>
+• <strong>Translúcidos</strong> — absorvem parte da luz, deixando passar a outra parte</div>
+<div class="bx bx-key"><span class="bx-tit">3 — Energia Química</span>
+É a energia liberada (ou produzida) em algumas <strong>reações químicas</strong>, como nas <strong>combustões</strong> ou na <strong>digestão dos alimentos</strong>.<br><br>
+A energia química liberada na digestão é representada pelas <strong>quilocalorias</strong>. Quanto mais quilocalorias, mais energia química o alimento oferece para o corpo.</div>
+<table class="tbl"><tr><th>Alimento</th><th>Quantidade</th><th>Quilocalorias</th></tr>
+<tr><td>Feijão-preto cozido</td><td>1 colher de sopa (20 g)</td><td>14</td></tr>
+<tr><td>Arroz integral cozido</td><td>1 colher de sopa (20 g)</td><td>22</td></tr>
+<tr><td>Mandioca frita</td><td>1 pires de chá (100 g)</td><td>352</td></tr>
+<tr><td>Banana-nanica</td><td>1 unidade (90 g)</td><td>87</td></tr>
+<tr><td>Manga</td><td>1 unidade (350 g)</td><td>230</td></tr>
+<tr><td>Omelete</td><td>1 porção (100 g)</td><td>170</td></tr>
+<tr><td>Pescada cozida</td><td>1 filé (100 g)</td><td>97</td></tr>
+<tr><td>Cenoura</td><td>1 unidade (100 g)</td><td>45</td></tr>
+<tr><td>Espinafre</td><td>1 pires de chá (100 g)</td><td>38</td></tr></table>
+<div class="bx bx-warn"><span class="bx-tit">Lendo a tabela</span>
+Alimento <strong>mais calórico</strong>: mandioca frita (352 kcal)<br>
+Alimento <strong>menos calórico</strong>: feijão-preto cozido (14 kcal)</div>
+<div class="think"><div class="think-t">🎮 Pausa pra pensar</div>
+<div class="think-q">Uma janela de vidro é transparente, a parede é opaca e o vidro do box do banheiro é translúcido. Por que cada material foi escolhido para cada função?</div></div>`},
+
+{id:"ci2",nome:"Energia Térmica e Energia Elétrica",meta:"Apostila pp. 174 e 175",
+html:`<p>Duas formas de energia que estão em toda a sua casa — e que exigem cuidado.</p>
+<h4>Energia Térmica</h4>
+<div class="bx bx-key"><span class="bx-tit">O que é</span>
+A energia térmica é relacionada à <strong>temperatura</strong> de uma substância. Pode ser proveniente do <strong>Sol</strong> ou produzida por <strong>reações químicas</strong>, como a queima.<br><br>
+A <strong>transferência</strong> de energia térmica é chamada de <strong>calor</strong>.</div>
+<div class="bx bx-ex"><span class="bx-tit">Condutores de calor</span>
+Alguns materiais conduzem calor facilmente — são os <strong>condutores de calor</strong>.<br><br>
+Os <strong>metais</strong>: alumínio, ferro, aço inoxidável.<br>
+Por isso as <strong>panelas</strong> são feitas de metal: aquecem rapidamente, transferindo energia da chama para o alimento.</div>
+<div class="bx bx-ex"><span class="bx-tit">Isolantes térmicos</span>
+Outros materiais conduzem mal o calor — são os <strong>isolantes térmicos</strong>.<br><br>
+<strong>Plástico</strong> e <strong>madeira</strong>: por isso os cabos das panelas são feitos desses materiais — não aquecem tanto e podemos segurá-los.<br><br>
+<strong>Isopor</strong>: usado em caixas de transporte de alimentos que devem permanecer frescos, para evitar a troca de calor com o ambiente.</div>
+<h4>Energia Elétrica</h4>
+<div class="bx bx-key"><span class="bx-tit">O que é</span>
+A energia elétrica é relacionada ao <strong>movimento de cargas elétricas</strong>, como o que ocorre em um <strong>raio</strong>.<br><br>
+Esse movimento é provocado pela <strong>tensão elétrica</strong>: quando existe <strong>diferença na quantidade de cargas elétricas entre dois pontos</strong>.</div>
+<div class="bx bx-ex"><span class="bx-tit">O experimento da lã, do balão e da latinha</span>
+1️⃣ Ao <strong>esfregar a lã no balão</strong>, cargas elétricas passam da lã para o balão, que fica <strong>carregado eletricamente</strong><br>
+2️⃣ Ao aproximar o balão de um objeto metálico, como a latinha, criamos uma <strong>tensão elétrica</strong> entre eles<br>
+3️⃣ A latinha, solta sobre a mesa, está <strong>livre para mover-se</strong><br>
+4️⃣ Ela se move porque as cargas elétricas do balão eletrizado <strong>atraem</strong> as da latinha</div>
+<div class="bx bx-warn"><span class="bx-tit">Condutores e isolantes de eletricidade</span>
+As cargas passam com mais facilidade por certos materiais, como os <strong>metais</strong>. Assim, além de condutores de calor, os metais são <strong>condutores de eletricidade</strong>.<br><br>
+Os <strong>isolantes de calor</strong> também são, geralmente, <strong>isolantes de eletricidade</strong>: borracha e certos tipos de plástico.<br><br>
+Por isso os <strong>fios elétricos</strong> são compostos de <strong>metal</strong> (que conduz eletricidade) e revestidos por <strong>borracha</strong> (que impede que a eletricidade passe para fora do fio).</div>
+<div class="think"><div class="think-t">🎮 Pausa pra pensar</div>
+<div class="think-q">Por que um fio elétrico sem o revestimento de borracha é perigoso? O que aconteceria se você o tocasse?</div></div>`},
+
+{id:"ci3",nome:"A Energia Elétrica em Nossa Vida",meta:"Apostila pp. 176 e 177",
+html:`<p>Nos dias atuais é difícil imaginar a vida sem eletricidade. Precisamos dela não somente para acender lâmpadas, mas também para o funcionamento de eletrodomésticos e equipamentos eletrônicos que trazem conforto e informação.</p>
+<h4>A etiqueta do ventilador</h4>
+<div class="bx bx-ex"><span class="bx-tit">Dados observados por Breno</span>
+<strong>POTÊNCIA:</strong> 60 W<br>
+<strong>TENSÃO:</strong> 120 V<br>
+Ventilador 30 cm · Modelo AT-ST</div>
+<h4>Potência</h4>
+<div class="bx bx-key"><span class="bx-tit">O que significa</span>
+A <strong>potência</strong> é a <strong>quantidade de energia que um aparelho elétrico consome durante seu funcionamento</strong>.<br><br>
+Portanto, quanto <strong>maior a potência</strong>, <strong>maior o consumo</strong> de energia em certo intervalo de tempo.<br><br>
+A potência de <strong>60 W (watts)</strong> indica que esse ventilador consome 60 W de energia a <strong>cada hora ligado</strong>.</div>
+<h4>Corrente e Tensão</h4>
+<div class="bx bx-key"><span class="bx-tit">Corrente elétrica</span>
+A energia elétrica que consumimos é obtida pela <strong>movimentação de cargas que atravessam os fios elétricos e os aparelhos</strong>. A essa movimentação damos o nome de <strong>corrente elétrica</strong>.</div>
+<div class="bx bx-key"><span class="bx-tit">Tensão elétrica</span>
+As cargas se movem quando estão sujeitas a uma <strong>tensão elétrica</strong>.<br><br>
+No ventilador de Breno, <strong>120 V (volts)</strong> indica que essa é a tensão elétrica <strong>ideal</strong> para gerar a corrente elétrica necessária para o aparelho funcionar.<br><br>
+Normalmente, as casas apresentam tomadas com tensão em torno de <strong>110 V ou 220 V</strong>.<br><br>
+⚠️ Quanto <strong>maior a tensão</strong> em um aparelho, <strong>maior será a corrente elétrica</strong>. A tensão de 220 V gera uma corrente mais intensa que a de 110 V.</div>
+<h4>Segurança elétrica</h4>
+<div class="bx bx-warn"><span class="bx-tit">Choque elétrico</span>
+O choque elétrico é a <strong>passagem de corrente elétrica pelo corpo</strong> e pode variar de um <strong>formigamento</strong> a uma <strong>fatal parada cardíaca</strong>.<br><br>
+Por isso é importante:<br>
+🚫 Evitar sair de casa durante <strong>tempestades de raios</strong><br>
+🚫 Nunca <strong>empinar pipas perto de fios elétricos</strong><br>
+🚫 Nunca <strong>tocar em fios desencapados</strong><br>
+✅ Ajustes elétricos devem ser sempre feitos por um <strong>profissional habilitado</strong></div>
+<div class="bx bx-ex"><span class="bx-tit">Como economizar energia elétrica em casa</span>
+Como a potência indica o consumo por hora ligado, economizar significa:<br>
+• Desligar aparelhos quando não estiverem em uso<br>
+• Preferir aparelhos de <strong>menor potência</strong> quando possível<br>
+• Reduzir o <strong>tempo</strong> de uso dos aparelhos de alta potência</div>
+<div class="think"><div class="think-t">🎮 Pausa pra pensar</div>
+<div class="think-q">Um chuveiro tem potência muito maior que uma lâmpada. Qual dos dois faz a conta de luz subir mais rápido, mesmo sendo usado por menos tempo?</div></div>`},
+
+{id:"ci4",nome:"Circuitos Elétricos e Eletromagnetismo",meta:"Apostila pp. 178, 179 e 182",
+html:`<p>Ter tensão elétrica não basta. A energia precisa de um <strong>caminho fechado</strong> para percorrer.</p>
+<h4>O que é um circuito elétrico</h4>
+<div class="bx bx-key"><span class="bx-tit">Os três elementos</span>
+Para que um aparelho funcione, não basta termos tensão elétrica — precisamos ligá-lo em um <strong>circuito com fios condutores</strong> pelos quais as cargas possam passar.<br><br>
+Um circuito elétrico é composto de:<br>
+1️⃣ <strong>Gerador</strong> (a pilha, por exemplo) — gera a tensão elétrica<br>
+2️⃣ <strong>Fios condutores</strong> — caminho por onde as cargas passam<br>
+3️⃣ <strong>Aparelhos</strong> — a lâmpada, por exemplo</div>
+<div class="bx bx-warn"><span class="bx-tit">Circuito aberto e fechado</span>
+Para ligar e desligar os aparelhos, utilizamos um <strong>interruptor</strong>, que nada mais é que uma <strong>ligação que pode ser desfeita</strong> entre os fios condutores.<br><br>
+🔌 <strong>Chave fechada</strong> → o interruptor liga os fios → <strong>circuito fechado</strong> → HÁ passagem de corrente → <strong>lâmpada acesa</strong> 💡<br><br>
+⛔ <strong>Chave aberta</strong> → o interruptor não liga os fios → <strong>circuito aberto</strong> → NÃO há condução de eletricidade → <strong>lâmpada apagada</strong></div>
+<h4>Eletromagnetismo</h4>
+<div class="bx bx-key"><span class="bx-tit">A descoberta</span>
+Eletricidade e magnetismo são <strong>dois fenômenos interligados</strong>. Essa foi a descoberta que inseriu de uma vez por todas a eletricidade em nossa vida.<br><br>
+Foi observado que, ao <strong>movimentarmos um ímã na bobina</strong> de um circuito fechado, uma <strong>corrente elétrica é induzida</strong> no circuito — ou seja, <strong>sem a necessidade de uma fonte geradora</strong> como uma pilha.<br><br>
+<em>Bobina = estrutura formada por um fio condutor enrolado em si mesmo.</em></div>
+<h4>Como funcionam as usinas de energia</h4>
+<div class="bx bx-warn"><span class="bx-tit">O princípio</span>
+É nesse princípio que se baseiam as usinas de energia: um tipo de energia (geralmente <strong>mecânica ou térmica</strong>) é usado para <strong>girar turbinas</strong>.<br><br>
+Essas turbinas são como <strong>grandes bobinas</strong> que, ao girar ao redor de um <strong>campo magnético</strong>, geram <strong>corrente elétrica</strong>.</div>
+<div class="bx bx-ex"><span class="bx-tit">O caminho da energia até sua casa</span>
+1️⃣ <strong>Usina de energia</strong> — gera eletricidade<br>
+⬇️<br>
+2️⃣ <strong>Subestação transformadora</strong> — muda a tensão das linhas de energia<br>
+⬇️<br>
+3️⃣ <strong>Transformador no poste</strong> da empresa de eletricidade — muda a tensão para uso nas casas<br>
+⬇️<br>
+4️⃣ <strong>Quadro de distribuição da casa</strong> — divide a eletricidade para cada cômodo<br><br>
+A energia é distribuída por fios de <strong>alta-tensão</strong>. Ao longo do caminho a tensão é <strong>reduzida</strong> e, no quadro de energia, é ajustada para <strong>110 V ou 220 V</strong>.</div>
+<h4>Conhecendo o cientista: Michael Faraday</h4>
+<div class="bx bx-ex"><span class="bx-tit">Michael Faraday (1791–1867)</span>
+Cientista <strong>britânico</strong>. Nascido em família pobre, começou a trabalhar aos <strong>13 anos</strong> para um encadernador de livros e, aos <strong>14</strong>, tornou-se seu aprendiz.<br><br>
+Leu muitos dos livros que encadernou, sobretudo os de Ciências. Com <strong>21 anos</strong>, assistiu a palestras do renomado químico <strong>Humphry Davy</strong>. Compilou tudo o que aprendera e enviou para esse cientista, que o empregou.<br><br>
+Em <strong>1831</strong>, conseguiu <strong>converter energia mecânica em energia elétrica</strong>, com base na formação de corrente por campo magnético — nosso principal meio de geração de energia elétrica.</div>
+<div class="think"><div class="think-t">🎮 Pausa pra pensar</div>
+<div class="think-q">Faraday era pobre e começou trabalhando como encadernador. O que na atitude dele permitiu que se tornasse um dos maiores cientistas da história?</div></div>`},
+
+{id:"ci5",nome:"Caderno Mais — Materiais e Energia",meta:"Caderno Mais · Módulo 3 · Cap. 8 · pp. 56, 57, 60 e 61",
+html:`<p>O <strong>Caderno Mais</strong> é a parte de exercícios do material. Aqui o conteúdo vira prática — e é exatamente nesse formato que as questões costumam aparecer na prova.</p>
+<h4>As formas de energia — revisão em pergunta</h4>
+<div class="bx bx-key"><span class="bx-tit">Questão 10 — As duas perguntas-chave</span>
+<strong>a) Quais são as formas em que a energia pode se apresentar?</strong><br>
+Energia <strong>mecânica, luminosa, química, térmica e elétrica</strong>.<br><br>
+<strong>b) A energia pode ser criada ou destruída?</strong><br>
+<strong>Não.</strong> A energia <strong>não é criada nem destruída — ela apenas se transforma</strong> de uma forma em outra.</div>
+<h4>Classificando imagens por tipo de energia</h4>
+<p>A questão 11 mostra imagens do dia a dia e pede o <strong>tipo de energia predominante</strong> em cada uma. Veja o raciocínio de cada uma:</p>
+<table class="tbl"><tr><th>Imagem</th><th>Energia</th><th>Por quê</th></tr>
+<tr><td>🔥 Fogão a lenha aceso</td><td><strong>Térmica</strong></td><td>O fogo produz calor</td></tr>
+<tr><td>🎱 Jogo de sinuca</td><td><strong>Mecânica</strong></td><td>As bolas estão em movimento</td></tr>
+<tr><td>🥤 Liquidificador ligado</td><td><strong>Elétrica</strong></td><td>Funciona ligado na tomada</td></tr>
+<tr><td>🍽️ Prato de comida</td><td><strong>Química</strong></td><td>Energia liberada na digestão</td></tr>
+<tr><td>☀️ Sol entre as árvores</td><td><strong>Luminosa</strong></td><td>Manifesta-se como luz visível</td></tr></table>
+<div class="bx bx-warn"><span class="bx-tit">A técnica para acertar sempre</span>
+Pergunte: <em>"o que está acontecendo nessa imagem?"</em><br><br>
+Algo <strong>se movendo</strong> → mecânica<br>
+Algo <strong>quente ou queimando</strong> → térmica<br>
+Algo <strong>brilhando ou iluminando</strong> → luminosa<br>
+Algo <strong>ligado na tomada ou pilha</strong> → elétrica<br>
+<strong>Alimento ou reação química</strong> → química</div>
+<h4>Tabela de quilocalorias do Caderno Mais</h4>
+<p>Atenção: esta tabela é <strong>diferente</strong> da tabela da apostila. Os alimentos e os valores não são os mesmos!</p>
+<table class="tbl"><tr><th>Alimento (100 g)</th><th>Quilocalorias</th></tr>
+<tr><td>Alface lisa</td><td>15</td></tr>
+<tr><td>Banana</td><td>130</td></tr>
+<tr><td>Batata industrializada tipo <em>chips</em></td><td>550</td></tr>
+<tr><td>Biscoito recheado</td><td>480</td></tr>
+<tr><td>Cenoura</td><td>35</td></tr>
+<tr><td>Pão francês</td><td>300</td></tr></table>
+<div class="bx bx-key"><span class="bx-tit">Questão 14 — lendo a tabela</span>
+<strong>a) Qual alimento fornece a MAIOR quantidade de energia química?</strong><br>
+<strong>Batata industrializada tipo chips</strong> — 550 kcal, o maior valor da tabela.<br><br>
+<strong>b) Qual alimento fornece a MENOR quantidade?</strong><br>
+<strong>Alface lisa</strong> — apenas 15 kcal, o menor valor da tabela.</div>
+<h4>Questão 15 — Marcando os isolantes térmicos</h4>
+<div class="bx bx-ex"><span class="bx-tit">Quais materiais são isolantes</span>
+✅ <strong>Piso de madeira</strong> — a madeira conduz mal o calor<br>
+❌ <strong>Tubos de cobre</strong> — cobre é metal, portanto condutor<br>
+❌ <strong>Cilindros de aço</strong> — aço é metal, portanto condutor<br>
+✅ <strong>Bloco de isopor</strong> — isopor é isolante, usado em caixas térmicas</div>
+<div class="bx bx-warn"><span class="bx-tit">Regra prática para não errar</span>
+<strong>Metal = CONDUTOR</strong> (cobre, aço, alumínio, ferro)<br>
+<strong>Não metal = ISOLANTE</strong> (madeira, plástico, isopor, borracha)</div>
+<h4>Questão 16 — A movimentação das cargas</h4>
+<div class="bx bx-key"><span class="bx-tit">Qual é o fator responsável pela movimentação de cargas elétricas entre corpos?</span>
+A <strong>diferença de potencial</strong> — também chamada de <strong>tensão elétrica</strong>.<br><br>
+É ela que "empurra" as cargas de um ponto ao outro.</div>
+<h4>Questão 17 — Identificando o circuito elétrico</h4>
+<div class="bx bx-key"><span class="bx-tit">a) Quais são os elementos que formam um circuito elétrico?</span>
+<strong>Gerador</strong> · <strong>Fios condutores</strong> · <strong>Aparelhos</strong></div>
+<div class="bx bx-ex"><span class="bx-tit">b) Identificando na ilustração</span>
+💡 <strong>A</strong> = o <strong>aparelho</strong> — a lâmpada<br>
+🔋 <strong>B</strong> = a <strong>pilha</strong> — que é o gerador<br>
+🔌 <strong>C</strong> = o <strong>fio condutor</strong> — caminho das cargas</div>
+<div class="bx bx-warn"><span class="bx-tit">Cuidado com a pegadinha</span>
+A pilha é o <strong>gerador</strong>. Se a questão pedir "o gerador", a resposta é a pilha. Se pedir "o aparelho", é a lâmpada. Muita gente troca os dois!</div>
+<div class="think"><div class="think-t">🎮 Pausa pra pensar</div>
+<div class="think-q">A batata chips tem 550 kcal e a alface tem 15. As duas dão energia ao corpo. Então por que não podemos comer só chips?</div></div>`}
+],
+questoes:[
+{t:"ci1",q:"Sobre a energia, é correto afirmar que:",o:["Ela surge e desaparece constantemente","Ela não surge nem desaparece — apenas se transforma","Ela só existe na eletricidade"],a:1,f:"Correto. Assim como a matéria, a energia se transforma mas não é criada nem destruída."},
+{t:"ci1",q:"Quais são as cinco formas em que a energia pode se apresentar?",o:["Mecânica, luminosa, química, térmica e elétrica","Sólida, líquida, gasosa, quente e fria","Solar, eólica, nuclear, hídrica e fóssil"],a:0,f:"Exato. Essas são as cinco formas citadas na apostila."},
+{t:"ci1",q:"A energia mecânica está associada ao:",o:["Calor dos corpos","Movimento dos corpos","Brilho dos corpos"],a:1,f:"Correto. Pode ser cinética (em movimento) ou potencial (permite entrar em movimento)."},
+{t:"ci1",q:"No pêndulo, a esfera suspensa no alto tem energia:",o:["Cinética","Potencial","Química"],a:1,f:"Exato. Quando ela desce, a energia potencial vira energia cinética."},
+{t:"ci1",q:"Materiais que permitem a passagem COMPLETA da luz são chamados de:",o:["Opacos","Translúcidos","Transparentes"],a:2,f:"Correto. Opacos absorvem tudo; translúcidos deixam passar parte da luz."},
+{t:"ci1",q:"Materiais que absorvem PARTE da luz e deixam passar a outra parte são:",o:["Translúcidos","Transparentes","Opacos"],a:0,f:"Exato. Como o vidro fosco de um box de banheiro."},
+{t:"ci1",q:"A energia liberada na digestão dos alimentos é representada pelas:",o:["Quilocalorias","Voltagens","Turbinas"],a:0,f:"Correto. Quanto mais quilocalorias, mais energia química o alimento oferece."},
+{t:"ci1",q:"Na tabela da apostila, qual é o alimento MAIS calórico?",o:["Manga (230 kcal)","Mandioca frita (352 kcal)","Omelete (170 kcal)"],a:1,f:"Exato. A mandioca frita tem 352 kcal por pires de chá."},
+{t:"ci1",q:"Na tabela da apostila, qual é o alimento MENOS calórico?",o:["Feijão-preto cozido (14 kcal)","Espinafre (38 kcal)","Cenoura (45 kcal)"],a:0,f:"Correto. O feijão-preto cozido tem apenas 14 kcal por colher de sopa."},
+{t:"ci2",q:"A transferência de energia térmica é chamada de:",o:["Corrente","Calor","Tensão"],a:1,f:"Correto. Calor é a transferência de energia térmica entre corpos."},
+{t:"ci2",q:"Por que as panelas são feitas de metal?",o:["Porque metais são isolantes térmicos","Porque metais são condutores de calor e aquecem rapidamente","Porque metais são mais baratos"],a:1,f:"Exato. Os metais transferem a energia da chama para o alimento com rapidez."},
+{t:"ci2",q:"Quais destes materiais são ISOLANTES térmicos?",o:["Alumínio e aço","Ferro e cobre","Madeira, plástico e isopor"],a:2,f:"Correto. Por isso os cabos das panelas são de plástico ou madeira."},
+{t:"ci2",q:"O isopor é usado em caixas de transporte de alimentos porque:",o:["Evita a troca de calor com o ambiente","Conduz calor rapidamente","É o material mais resistente"],a:0,f:"Exato. Sendo isolante, mantém os alimentos frescos."},
+{t:"ci2",q:"A tensão elétrica ocorre quando existe:",o:["Diferença na quantidade de cargas elétricas entre dois pontos","Muito calor em um ponto","Ausência total de cargas"],a:0,f:"Correto. Essa diferença é o que provoca o movimento das cargas."},
+{t:"ci2",q:"No experimento com lã, balão e latinha, por que a latinha se move?",o:["Porque o balão a empurra com o vento","Porque as cargas elétricas do balão eletrizado atraem as da latinha","Porque a mesa está inclinada"],a:1,f:"Exato. A tensão elétrica criada entre eles gera atração."},
+{t:"ci2",q:"Por que os fios elétricos são de metal revestidos por borracha?",o:["O metal conduz eletricidade e a borracha impede que ela saia do fio","A borracha conduz e o metal isola","Apenas por questão estética"],a:0,f:"Correto. Metal = condutor; borracha = isolante de eletricidade."},
+{t:"ci3",q:"O que a potência de um aparelho elétrico indica?",o:["A quantidade de energia que consome durante o funcionamento","O tamanho físico do aparelho","O preço do aparelho"],a:0,f:"Exato. Quanto maior a potência, maior o consumo por hora ligado."},
+{t:"ci3",q:"O ventilador de Breno tem potência de 60 W. Isso significa que ele consome:",o:["60 W por minuto","60 W a cada hora ligado","60 W no total, para sempre"],a:1,f:"Correto. A potência indica consumo por hora de funcionamento."},
+{t:"ci3",q:"A movimentação de cargas que atravessam os fios e aparelhos chama-se:",o:["Tensão elétrica","Potência","Corrente elétrica"],a:2,f:"Exato. Corrente elétrica é o movimento das cargas."},
+{t:"ci3",q:"Normalmente as casas apresentam tomadas com tensão de:",o:["60 V ou 90 V","110 V ou 220 V","12 V ou 24 V"],a:1,f:"Correto. São os dois padrões usados no Brasil."},
+{t:"ci3",q:"Comparando 110 V e 220 V, é correto dizer que:",o:["A tensão de 220 V gera uma corrente mais intensa","A tensão de 110 V gera uma corrente mais intensa","As duas geram exatamente a mesma corrente"],a:0,f:"Exato. Quanto maior a tensão, maior a corrente elétrica."},
+{t:"ci3",q:"O choque elétrico é:",o:["A passagem de corrente elétrica pelo corpo","O calor de um aparelho ligado","A luz emitida por um raio"],a:0,f:"Correto. Pode variar de um formigamento a uma fatal parada cardíaca."},
+{t:"ci3",q:"Qual destas atitudes NÃO é segura?",o:["Chamar um profissional habilitado para ajustes elétricos","Empinar pipa perto de fios elétricos","Evitar sair durante tempestades de raios"],a:1,f:"Exato. Empinar pipa perto de fios é extremamente perigoso."},
+{t:"ci4",q:"Quais são os elementos que formam um circuito elétrico?",o:["Gerador, fios condutores e aparelhos","Apenas fios e lâmpada","Ímã, bobina e turbina"],a:0,f:"Correto. O gerador (pilha) cria a tensão, os fios conduzem e o aparelho funciona."},
+{t:"ci4",q:"Quando o interruptor liga os fios, dizemos que o circuito está:",o:["Aberto — a lâmpada apaga","Fechado — a lâmpada acende","Quebrado"],a:1,f:"Exato. Circuito fechado = há passagem de corrente = lâmpada acesa."},
+{t:"ci4",q:"Com a chave ABERTA, o que acontece?",o:["Não há condução de eletricidade e a lâmpada fica apagada","A corrente passa mais forte","A lâmpada acende mais"],a:0,f:"Correto. Chave aberta interrompe o caminho da corrente."},
+{t:"ci4",q:"O que é uma bobina?",o:["Um tipo de pilha","Uma estrutura formada por um fio condutor enrolado em si mesmo","Um interruptor especial"],a:1,f:"Exato. Movimentar um ímã na bobina induz corrente elétrica."},
+{t:"ci4",q:"Ao movimentar um ímã na bobina de um circuito fechado:",o:["Nada acontece","Uma corrente elétrica é induzida, sem precisar de pilha","O circuito queima"],a:1,f:"Correto. Esse é o princípio do eletromagnetismo usado nas usinas."},
+{t:"ci4",q:"Nas usinas, o que faz as turbinas girarem e gerarem corrente?",o:["Energia mecânica ou térmica","Energia luminosa apenas","Energia química dos alimentos"],a:0,f:"Exato. As turbinas funcionam como grandes bobinas girando num campo magnético."},
+{t:"ci4",q:"Qual é a ordem correta do caminho da energia até a casa?",o:["Usina → subestação transformadora → transformador no poste → quadro de distribuição","Quadro de distribuição → poste → usina","Poste → usina → subestação"],a:0,f:"Correto. E a tensão vai sendo reduzida ao longo do caminho."},
+{t:"ci4",q:"O que Michael Faraday conseguiu fazer em 1831?",o:["Inventou a lâmpada elétrica","Converteu energia mecânica em energia elétrica","Descobriu o urânio"],a:1,f:"Exato. Baseado na formação de corrente por campo magnético — nosso principal meio de gerar eletricidade."},
+{t:"ci4",q:"Qual é o fator responsável pela movimentação de cargas elétricas entre corpos?",o:["A temperatura","A diferença de potencial (tensão elétrica)","A luz do ambiente"],a:1,f:"Correto. É a tensão elétrica que coloca as cargas em movimento."},
+{t:"ci5",q:"Caderno Mais, questão 10: a energia pode ser criada ou destruída?",o:["Sim, ela é criada nas usinas","Não — ela apenas se transforma de uma forma em outra","Sim, ela é destruída quando usamos"],a:1,f:"Correto! A energia não é criada nem destruída. Ela só muda de forma."},
+{t:"ci5",q:"Na questão 11, a imagem do fogão a lenha aceso representa qual energia predominante?",o:["Térmica","Luminosa","Mecânica"],a:0,f:"Isso! O fogo produz calor — energia térmica."},
+{t:"ci5",q:"A imagem do jogo de sinuca, com as bolas em movimento, representa energia:",o:["Química","Mecânica","Elétrica"],a:1,f:"Correto! Energia mecânica está associada ao movimento dos corpos."},
+{t:"ci5",q:"A imagem do liquidificador ligado representa energia predominantemente:",o:["Luminosa","Térmica","Elétrica"],a:2,f:"Exato! Aparelho ligado na tomada funciona com energia elétrica."},
+{t:"ci5",q:"A imagem do prato de comida representa qual tipo de energia?",o:["Química","Mecânica","Térmica"],a:0,f:"Correto! O alimento fornece energia química, liberada na digestão."},
+{t:"ci5",q:"A imagem do sol brilhando entre as árvores representa energia:",o:["Elétrica","Luminosa","Química"],a:1,f:"Isso! A energia luminosa se manifesta como luz visível."},
+{t:"ci5",q:"Na tabela do Caderno Mais (p. 60), qual alimento fornece a MAIOR quantidade de energia química?",o:["Biscoito recheado (480 kcal)","Pão francês (300 kcal)","Batata industrializada tipo chips (550 kcal)"],a:2,f:"Correto! A batata chips tem 550 kcal, o maior valor da tabela."},
+{t:"ci5",q:"Na tabela do Caderno Mais, qual alimento fornece a MENOR quantidade de energia química?",o:["Alface lisa (15 kcal)","Cenoura (35 kcal)","Banana (130 kcal)"],a:0,f:"Exato! A alface lisa tem apenas 15 kcal."},
+{t:"ci5",q:"Quantas quilocalorias tem o biscoito recheado na tabela do Caderno Mais?",o:["300 kcal","480 kcal","550 kcal"],a:1,f:"Correto! Biscoito recheado = 480 kcal por 100 g."},
+{t:"ci5",q:"Questão 15: o PISO DE MADEIRA deve ser marcado como isolante térmico?",o:["Sim — a madeira conduz mal o calor","Não — a madeira é condutora","Só se estiver pintada"],a:0,f:"Isso! Madeira é isolante térmico, assim como plástico e isopor."},
+{t:"ci5",q:"Questão 15: os TUBOS DE COBRE são isolantes térmicos?",o:["Sim, porque são ocos","Não — o cobre é metal, portanto condutor de calor","Sim, porque são pequenos"],a:1,f:"Correto! Todo metal é condutor de calor — cobre, aço, alumínio, ferro."},
+{t:"ci5",q:"Questão 15: o BLOCO DE ISOPOR é isolante térmico?",o:["Sim — por isso é usado em caixas térmicas","Não — o isopor conduz muito calor","Depende da cor do isopor"],a:0,f:"Exato! O isopor evita a troca de calor com o ambiente."},
+{t:"ci5",q:"Questão 15: os CILINDROS DE AÇO devem ser marcados como isolantes?",o:["Sim, aço é isolante","Não — o aço é metal, portanto condutor","Apenas se forem finos"],a:1,f:"Correto! Aço é metal, e metais conduzem calor."},
+{t:"ci5",q:"Questão 16: qual é o fator responsável pela movimentação de cargas elétricas entre corpos?",o:["A temperatura do ambiente","A diferença de potencial (tensão elétrica)","O peso dos corpos"],a:1,f:"Isso! A diferença de potencial é o que 'empurra' as cargas de um ponto ao outro."},
+{t:"ci5",q:"Questão 17a: quais são os três elementos que formam um circuito elétrico?",o:["Gerador, fios condutores e aparelhos","Ímã, bobina e turbina","Pilha, água e metal"],a:0,f:"Correto! Sem qualquer um dos três, o circuito não funciona."},
+{t:"ci5",q:"Questão 17b: na ilustração do circuito, a letra A aponta para a lâmpada. A lâmpada é o:",o:["Gerador","Fio condutor","Aparelho"],a:2,f:"Exato! A lâmpada é o aparelho que consome a energia do circuito."},
+{t:"ci5",q:"Questão 17b: na ilustração, a letra B aponta para a pilha. A pilha funciona como:",o:["Aparelho","Gerador","Interruptor"],a:1,f:"Correto! A pilha é o gerador — ela cria a tensão elétrica."},
+{t:"ci5",q:"Questão 17b: na ilustração, a letra C aponta para o fio. Qual a função dele?",o:["Fio condutor — caminho por onde as cargas passam","Gerador de energia","Isolante do circuito"],a:0,f:"Isso! O fio condutor leva as cargas do gerador até o aparelho."}
+]}
+};
+
+/* ===================== ESTADO ===================== */
+const KEYS = (function(){
+  const todas = Object.keys(DB);
+  if(!ALUNO.ordem || !ALUNO.ordem.length) return todas;
+  const ord = ALUNO.ordem.filter(k=>todas.includes(k));
+  todas.forEach(k=>{ if(!ord.includes(k)) ord.push(k); });
+  return ord;
+})();
+const st = { view:'home', mode:{}, ans:{}, open:{}, started:{} };
+KEYS.forEach(k=>{ st.mode[k]='study'; st.ans[k]={}; st.open[k]=null; st.started[k]=false; });
+
+const GRAUS = [
+  {min:0,  n:"NOOB",         cor:"#94a3b8"},
+  {min:20, n:"INICIANTE",         cor:"#00a8ff"},
+  {min:40, n:"EXPLORADOR",         cor:"#22d98d"},
+  {min:60, n:"PRO",         cor:"#ffc312"},
+  {min:80, n:"MESTRE",  cor:"#fbbf24"},
+  {min:95, n:"LENDÁRIO",  cor:"#22c55e"}
+];
+function grauDe(p){ let g=GRAUS[0]; GRAUS.forEach(x=>{ if(p>=x.min) g=x; }); return g; }
+
+/* ===================== NAV ===================== */
+function buildNav(){
+  let h = `<button class="ntab${st.view==='home'?' on':''}" onclick="go('home')">
+    <span class="ntab-ic">🎮</span><div class="ntab-tx"><div class="ntab-n">LOBBY</div><div class="ntab-d">Início</div></div></button>`;
+  KEYS.forEach(k=>{
+    const d = DB[k];
+    h += `<button class="ntab${st.view===k?' on':''}" onclick="go('${k}')">
+      <span class="ntab-ic">${d.ic}</span>
+      <div class="ntab-tx"><div class="ntab-n">${d.n}</div><div class="ntab-d">${d.d}</div></div></button>`;
+  });
+  document.getElementById('navIn').innerHTML = h;
+}
+
+/* ===================== HELPERS ===================== */
+function pctOf(k){
+  const tot = DB[k].questoes.length;
+  const done = Object.keys(st.ans[k]).length;
+  return tot ? Math.round(done/tot*100) : 0;
+}
+function acertosOf(k){
+  let r=0;
+  Object.keys(st.ans[k]).forEach(i=>{ if(st.ans[k][i]===DB[k].questoes[i].a) r++; });
+  return r;
+}
+function statusTopico(k,tid){
+  const qs = DB[k].questoes;
+  let tot=0, err=0, resp=0;
+  qs.forEach((q,i)=>{
+    if(q.t!==tid) return;
+    tot++;
+    if(st.ans[k][i]!==undefined){ resp++; if(st.ans[k][i]!==q.a) err++; }
+  });
+  if(resp===0) return {s:'neutro',err:0,tot:tot,resp:0};
+  if(err>0)    return {s:'weak',  err:err, tot:tot, resp:resp};
+  if(resp===tot) return {s:'mastered',err:0,tot:tot,resp:resp};
+  return {s:'neutro',err:0,tot:tot,resp:resp};
+}
+
+/* ===================== HOME ===================== */
+function viewHome(){
+  let cards='';
+  KEYS.forEach(k=>{
+    const d=DB[k], p=pctOf(k);
+    cards += `<div class="mcard" onclick="go('${k}')">
+      <div class="mc-date">📅 ${d.d}</div>
+      <span class="mc-ic">${d.ic}</span>
+      <div class="mc-n">${d.n}</div>
+      <div class="mc-bar"><div class="mc-fill" style="width:${p}%"></div></div>
+      <div class="mc-pct">${p}% completo</div>
+    </div>`;
+  });
+  const totQ = KEYS.reduce((a,k)=>a+DB[k].questoes.length,0);
+  const totT = KEYS.reduce((a,k)=>a+DB[k].topicos.length,0);
+  return `<div class="hero">
+    <div class="hero-mark">🎮</div>
+    <div class="hero-t">MAPAS DE<br><span>${ALUNO.nome.toUpperCase()}</span></div>
+    <div class="hero-s">${ALUNO.turma} · ${ALUNO.escola} · ${ALUNO.bimestre}<br><br>Cada matéria é um mapa com data de prova. Treine as fases, encare o desafio e descubra exatamente onde você precisa voltar a jogar.</div>
+  </div>
+  <div class="mhead" style="margin-top:8px">
+    <div class="mh-tag">Como jogar</div>
+    <div class="mh-t">Regras do <span>jogo</span></div>
+    <div class="mh-d" style="margin-top:8px;line-height:1.7">
+      <strong style="color:#6ff0b8">1. TREINAR</strong> — Estude o conteúdo de cada fase da apostila.<br>
+      <strong style="color:#5cc9ff">2. DESAFIO</strong> — Responda as perguntas sem consultar nada.<br>
+      <strong style="color:#fbbf24">3. Diagnóstico</strong> — O app mostra em quais tópicos você errou.<br>
+      <strong style="color:#22c55e">4. Reestudo</strong> — Volte direto ao ponto fraco e refaça a verificação.
+    </div>
+    <div class="mh-stats">
+      <div class="mh-st"><div class="mh-sv">${KEYS.length}</div><div class="mh-sl">Mapas</div></div>
+      <div class="mh-st"><div class="mh-sv">${totT}</div><div class="mh-sl">Fases</div></div>
+      <div class="mh-st"><div class="mh-sv">${totQ}</div><div class="mh-sl">Questões</div></div>
+    </div>
+  </div>
+  <div class="mgrid">${cards}</div>`;
+}
+
+/* ===================== MISSÃO ===================== */
+function viewMissao(k){
+  const d=DB[k];
+  const p=pctOf(k), ac=acertosOf(k), resp=Object.keys(st.ans[k]).length;
+  return `<div class="mhead">
+    <div class="mh-tag">Mapa · ${d.d}</div>
+    <div class="mh-t">${d.ic} <span>${d.n}</span></div>
+    <div class="mh-d">${d.topicos.length} fases · ${d.questoes.length} desafios</div>
+    <div class="mh-stats">
+      <div class="mh-st"><div class="mh-sv">${p}%</div><div class="mh-sl">Completo</div></div>
+      <div class="mh-st"><div class="mh-sv">${ac}/${resp||0}</div><div class="mh-sl">Acertos</div></div>
+      <div class="mh-st"><div class="mh-sv">${d.topicos.length}</div><div class="mh-sl">Fases</div></div>
+    </div>
+  </div>
+  <div class="modes">
+    <button class="mode${st.mode[k]==='study'?' on':''}" onclick="setMode('${k}','study')">
+      <span class="mode-ic">📖</span><div class="mode-n">Treinar</div><div class="mode-s">Estudar a fase</div></button>
+    <button class="mode${st.mode[k]==='quiz'?' on':''}" onclick="setMode('${k}','quiz')">
+      <span class="mode-ic">🎯</span><div class="mode-n">Desafio</div><div class="mode-s">Testar o que aprendeu</div></button>
+  </div>
+  ${ st.mode[k]==='study' ? renderStudy(k) : renderQuiz(k) }`;
+}
+
+/* ===================== ESTUDO ===================== */
+function renderStudy(k){
+  let h='';
+  DB[k].topicos.forEach((t,i)=>{
+    const s = statusTopico(k,t.id);
+    const cls = s.s==='weak'?' weak':(s.s==='mastered'?' mastered':'');
+    const open = st.open[k]===t.id ? ' open':'';
+    let badge='';
+    if(s.s==='weak')     badge=`<span class="t-badge tb-weak">⚠ ${s.err} erro${s.err>1?'s':''}</span>`;
+    if(s.s==='mastered') badge=`<span class="t-badge tb-ok">✓ zerada</span>`;
+    h += `<div class="topic${cls}${open}" id="top-${t.id}">
+      <div class="t-head" onclick="tog('${k}','${t.id}')">
+        <div class="t-num">${String(i+1).padStart(2,'0')}</div>
+        <div class="t-info"><div class="t-name">${t.nome}</div><div class="t-meta">${t.meta}</div></div>
+        ${badge}<span class="t-arr">▼</span>
+      </div>
+      <div class="t-body">${t.html}</div>
+    </div>`;
+  });
+  return h;
+}
+
+/* ===================== QUIZ ===================== */
+function renderQuiz(k){
+  const qs=DB[k].questoes;
+  const resp=Object.keys(st.ans[k]).length;
+  if(!st.started[k] && resp===0){
+    return `<div class="startq">
+      <span class="sq-ic">🎯</span>
+      <div class="sq-t">DESAFIO DE ${DB[k].n.toUpperCase()}</div>
+      <div class="sq-s">${qs.length} perguntas sobre as ${DB[k].topicos.length} fases deste mapa.</br><br>
+      Responda <strong style="color:#6ff0b8">sem olhar</strong> o material — é assim que o cérebro grava de verdade.</div>
+      <button class="btn btn-p" style="flex:none;padding:13px 30px" onclick="startQ('${k}')">▶ COMEÇAR DESAFIO</button>
+    </div>`;
+  }
+  let h='';
+  if(resp===qs.length) h+=renderDiag(k);
+  qs.forEach((q,i)=>{
+    const a=st.ans[k][i], done=a!==undefined, ok=done&&a===q.a;
+    const tp=DB[k].topicos.find(t=>t.id===q.t);
+    h+=`<div class="qcard${done?(ok?' right':' wrong'):''}" id="q-${k}-${i}">
+      <div class="q-top">
+        <span class="q-n">FASE ${String(i+1).padStart(2,'0')} / ${qs.length}</span>
+        <span class="q-topic">${tp?tp.nome:''}</span>
+        ${done?`<span class="q-res" style="color:${ok?'#86efac':'#fca5a5'}">${ok?'✓ ACERTOU':'✗ ERROU'}</span>`:''}
+      </div>
+      <div class="q-txt">${q.q}</div>
+      <div class="q-opts">`;
+    q.o.forEach((o,j)=>{
+      let c='opt';
+      if(done){
+        c+=' dis';
+        if(j===q.a && j===a) c+=' sel-right';
+        else if(j===a)       c+=' sel-wrong';
+        else if(j===q.a)     c+=' show-right';
+      }
+      h+=`<div class="${c}" onclick="resp('${k}',${i},${j})">
+        <span class="opt-l">${['A','B','C'][j]}</span><span>${o}</span></div>`;
+    });
+    h+=`</div><div class="q-fb${done?' on':''}">${done?
+      `<div class="fb-in ${ok?'fb-ok':'fb-no'}">${ok?'🎉 ':'💥 '}${q.f}</div>`:''}</div></div>`;
+  });
+  h+=`<div class="btns"><button class="btn btn-g" onclick="resetQ('${k}')">🔄 Jogar de novo</button></div>`;
+  return h;
+}
+
+/* ===================== DIAGNÓSTICO ===================== */
+function renderDiag(k){
+  const qs=DB[k].questoes, ac=acertosOf(k), tot=qs.length;
+  const pct=Math.round(ac/tot*100);
+  const g=grauDe(pct);
+  const gaps=[];
+  DB[k].topicos.forEach(t=>{
+    const s=statusTopico(k,t.id);
+    if(s.err>0) gaps.push({t:t,e:s.err,n:s.tot});
+  });
+  let body;
+  if(gaps.length===0){
+    body=`<div class="all-ok">
+      <span class="ao-ic">🏆</span>
+      <div class="ao-t">${ALUNO.nome.toUpperCase()} ZEROU O MAPA!</div>
+      <div class="ao-s">Nenhuma fase pendente neste mapa. Volte em alguns dias e jogue de novo — é assim que o conhecimento fica gravado de verdade.</div>
+    </div>`;
+  }else{
+    let list='';
+    gaps.forEach(g2=>{
+      list+=`<div class="gap" onclick="irPara('${k}','${g2.t.id}')">
+        <span class="gap-ic">🔴</span>
+        <div class="gap-in"><div class="gap-n">${g2.t.nome}</div>
+        <div class="gap-m">${g2.e} erro${g2.e>1?'s':''} de ${g2.n} perguntas · ${g2.t.meta}</div></div>
+        <span class="gap-go">TREINAR →</span></div>`;
+    });
+    body=`<div class="gap-list"><div class="gap-t">⚠ Fases que você precisa refazer</div>${list}</div>`;
+  }
+  return `<div class="diag">
+    <div class="diag-t">RESULTADO DO <span>DESAFIO</span></div>
+    <div class="diag-s">${ALUNO.nome} · ${DB[k].n} · Prova em ${DB[k].d}</div>
+    <div class="score-ring">
+      <div class="ring" style="background:conic-gradient(${g.cor} ${pct*3.6}deg, #1c3252 0deg);">
+        <div style="position:absolute;inset:6px;border-radius:50%;background:#152741;
+          display:flex;flex-direction:column;align-items:center;justify-content:center">
+          <div class="ring-n" style="color:${g.cor}">${pct}%</div>
+          <div class="ring-p">ACERTOS</div></div>
+      </div>
+      <div class="score-info">
+        <div class="si-rank" style="color:${g.cor}">${g.n}</div>
+        <div class="si-txt">${ac} de ${tot} questões corretas.<br>
+        ${gaps.length===0?'Mapa completo, sem erros!':`${gaps.length} fase${gaps.length>1?'s precisam':' precisa'} de treino.`}</div>
+      </div>
+    </div>
+    ${body}
+    <div class="btns">
+      <button class="btn btn-b" onclick="setMode('${k}','study')">📚 Voltar a treinar</button>
+      <button class="btn btn-p" onclick="resetQ('${k}')">🔄 Jogar de novo</button>
+    </div>
+  </div>`;
+}
+
+/* ===================== AÇÕES ===================== */
+function go(v){ st.view=v; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+function setMode(k,m){ st.mode[k]=m; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+function startQ(k){ st.started[k]=true; st.mode[k]='quiz'; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+function tog(k,tid){ st.open[k] = st.open[k]===tid ? null : tid; render();
+  if(st.open[k]===tid) setTimeout(()=>{
+    const el=document.getElementById('top-'+tid);
+    if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+  },60);
+}
+function resp(k,i,j){
+  if(st.ans[k][i]!==undefined) return;
+  st.ans[k][i]=j;
+  render(); updHUD();
+  setTimeout(()=>{
+    const el=document.getElementById('q-'+k+'-'+i);
+    if(el) el.scrollIntoView({behavior:'smooth',block:'center'});
+  },50);
+}
+function resetQ(k){ st.ans[k]={}; st.started[k]=true; render(); updHUD(); window.scrollTo({top:0,behavior:'smooth'}); }
+function irPara(k,tid){
+  st.mode[k]='study'; st.open[k]=tid; render();
+  setTimeout(()=>{
+    const el=document.getElementById('top-'+tid);
+    if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+  },90);
+}
+
+/* ===================== HUD ===================== */
+function updHUD(){
+  let totQ=0, totA=0, totR=0;
+  KEYS.forEach(k=>{
+    totQ+=DB[k].questoes.length;
+    totR+=Object.keys(st.ans[k]).length;
+    totA+=acertosOf(k);
+  });
+  const pct = totR ? Math.round(totA/totR*100) : 0;
+  const prog = totQ ? Math.round(totR/totQ*100) : 0;
+  const g = grauDe(totR>=6?pct:0);
+  document.getElementById('ceFill').style.width = prog+'%';
+  document.getElementById('ceTxt').textContent = totA+' / '+totR+' acertos';
+  const r=document.getElementById('rank');
+  r.textContent = g.n; r.style.color = g.cor;
+}
+
+/* ===================== RENDER ===================== */
+function render(){
+  buildNav();
+  document.getElementById('main').innerHTML =
+    st.view==='home' ? viewHome() : viewMissao(st.view);
+}
+function aplicarNome(){
+  document.getElementById('hudNome').textContent = 'SERVIDOR DE ' + ALUNO.nome.toUpperCase();
+  document.getElementById('hudSub').textContent  = ALUNO.turma + ' · ' + ALUNO.bimestre;
+  document.getElementById('ftLic').innerHTML =
+    'Licença individual de <b>' + ALUNO.nome + '</b> · ' + ALUNO.escola + '<br>Código ' + ALUNO.codigo + ' · uso pessoal e intransferível';
+  document.title = 'Mapas de ' + ALUNO.nome + ' — ' + ALUNO.bimestre;
+}
+aplicarNome(); render(); updHUD();
+</script>
+</body>
+</html>
